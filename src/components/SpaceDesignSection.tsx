@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { SectionHeader, SubLabel, FadeInUp } from "./AnimatedSection";
 import { ClipboardList, Ruler, MapPin, Map, Phone, Camera, Car, Building2, ArrowUpDown, DoorOpen } from "lucide-react";
+import { useMotionValueEvent, useScroll } from "framer-motion";
 
 const requestItems = [
   { icon: ClipboardList, title: "사업자 등록증", desc: "사업자 등록증 사본을 준비해 주세요." },
@@ -19,11 +20,32 @@ const checklistItems = [
 ];
 
 const SpaceDesignSection = () => {
-  const [checked, setChecked] = useState<boolean[]>([false, false, false, false]);
+  const checklistRef = useRef<HTMLDivElement | null>(null);
+  const [activeCount, setActiveCount] = useState(0);
 
-  const toggle = (i: number) => {
-    setChecked((prev) => prev.map((v, idx) => (idx === i ? !v : v)));
-  };
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", () => {
+    const el = checklistRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const viewportCenter = window.innerHeight / 2;
+    const elTop = rect.top;
+    const elCenter = rect.top + rect.height / 2;
+
+    // Progress is 0 when viewport center hits element top,
+    // and becomes 1 when element center aligns with viewport center.
+    const denom = Math.max(1, elCenter - elTop); // == rect.height / 2
+    const raw = (viewportCenter - elTop) / denom;
+    const v = Math.min(1, Math.max(0, raw));
+
+    const n = checklistItems.length;
+    const next = Math.min(n, Math.max(0, Math.round(v * n)));
+    setActiveCount(next);
+  });
+
+  const checked = useMemo(() => checklistItems.map((_, i) => i < activeCount), [activeCount]);
 
   return (
     <section id="design" className="py-32 px-6">
@@ -36,29 +58,31 @@ const SpaceDesignSection = () => {
         />
 
         <SubLabel>— 3D 시안 제작을 위한 정보 요청</SubLabel>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16 items-stretch">
           {requestItems.map((item, i) => (
-            <FadeInUp key={item.title} delay={i * 0.05}>
-              <div className="glass-card p-5 flex items-start gap-4 hover-lift">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <item.icon size={18} className="text-primary" />
+            <div key={item.title} className="h-full min-h-0 min-w-0 flex flex-col">
+              <FadeInUp delay={i * 0.05} className="min-h-0 flex flex-1 flex-col">
+                <div className="glass-card p-5 flex items-start gap-4 hover-lift flex-1 min-h-0 min-w-0">
+                  <div className="glass-icon-box h-11 w-11">
+                    <item.icon size={20} className="text-primary" strokeWidth={2} />
+                  </div>
+                  <div className="min-w-0 flex-1 flex flex-col gap-1">
+                    <div className="text-base font-semibold text-foreground leading-snug">{item.title}</div>
+                    <div className="text-sm text-muted-foreground leading-relaxed">{item.desc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-sm font-semibold text-foreground">{item.title}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{item.desc}</div>
-                </div>
-              </div>
-            </FadeInUp>
+              </FadeInUp>
+            </div>
           ))}
         </div>
 
         <SubLabel>— 현장 설치 환경 핵심 체크리스트</SubLabel>
-        <div className="space-y-3 mb-6">
+        <div ref={checklistRef} className="space-y-3 mb-6">
           {checklistItems.map((item, i) => (
-            <FadeInUp key={item.label} delay={i * 0.05}>
-              <button
-                onClick={() => toggle(i)}
-                className={`w-full glass-card p-5 flex items-start gap-4 text-left transition-all duration-300 ${
+            <FadeInUp key={item.label} delay={i * 0.05} className="min-h-0">
+              <div
+                role="group"
+                className={`w-full glass-card p-5 flex items-start gap-4 text-left transition-all duration-300 min-h-0 ${
                   checked[i] ? "border-primary/40 pink-glow" : ""
                 }`}
               >
@@ -75,20 +99,22 @@ const SpaceDesignSection = () => {
                     </svg>
                   )}
                 </div>
-                <div className="flex items-start gap-3 flex-1">
-                  <item.icon size={18} className="text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-sm font-semibold text-foreground">{item.label}</span>
-                    <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  <div className="glass-icon-box-sm mt-0.5">
+                    <item.icon size={16} className="text-primary" strokeWidth={2} />
+                  </div>
+                  <div className="min-w-0 flex-1 flex flex-col gap-1">
+                    <span className="text-base font-semibold text-foreground leading-snug">{item.label}</span>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                   </div>
                 </div>
-              </button>
+              </div>
             </FadeInUp>
           ))}
         </div>
 
         <FadeInUp>
-          <div className="text-xs text-muted-foreground bg-secondary/50 rounded-xl p-4 border border-border/30">
+          <div className="guide-note leading-relaxed">
             ※ 주의 사항: 현장 여건 및 설치 공정에 따라 추가 비용이 발생하거나 일정이 일부 변동될 수 있는 점 참고 부탁드립니다.
           </div>
         </FadeInUp>

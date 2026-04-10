@@ -51,9 +51,9 @@ const CopyButton = ({ text, label }: { text: string; label: string }) => {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors group"
+      className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors group"
     >
-      {copied ? <Check size={12} className="text-primary" /> : <Copy size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />}
+      {copied ? <Check size={14} className="text-primary" /> : <Copy size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />}
       <span>{text}</span>
     </button>
   );
@@ -73,21 +73,21 @@ const ContactSection = () => (
         {contacts.map((c, i) => (
           <FadeInUp key={c.dept} delay={i * 0.05}>
             <div className="glass-card p-6 hover-lift">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs text-primary font-medium">{c.category}</span>
-                <span className="text-xs font-bold text-foreground tracking-widest bg-secondary/50 px-3 py-1 rounded-full">
+              <div className="flex items-center justify-between gap-3 mb-4">
+                <span className="text-sm text-primary font-semibold">{c.category}</span>
+                <span className="glass-dept-badge shrink-0 px-4 py-2 text-sm font-bold tracking-[0.2em]">
                   {c.dept}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground whitespace-pre-line mb-4 leading-relaxed">{c.tasks}</p>
+              <p className="text-sm text-muted-foreground whitespace-pre-line mb-4 leading-relaxed">{c.tasks}</p>
               <div className="border-t border-border/30 pt-4 space-y-2">
-                <p className="text-sm font-semibold text-foreground">{c.name}</p>
+                <p className="text-base font-semibold text-foreground">{c.name}</p>
                 <div className="flex items-center gap-2">
-                  <Phone size={12} className="text-primary" />
+                  <Phone size={14} className="text-primary shrink-0" />
                   <CopyButton text={c.phone} label="전화번호가" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <Mail size={12} className="text-primary" />
+                  <Mail size={14} className="text-primary shrink-0" />
                   <CopyButton text={c.email} label="이메일이" />
                 </div>
               </div>

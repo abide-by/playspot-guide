@@ -1,7 +1,7 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useMotionValue, useMotionValueEvent, useScroll } from "framer-motion";
 import { SectionHeader, SubLabel, FadeInUp } from "./AnimatedSection";
-import { Package, Truck, Image } from "lucide-react";
+import { Lightbulb, Package, Truck, Image } from "lucide-react";
 
 const steps = [
   { num: "1", title: "카드사 가맹 신청·심사", desc: "제출 서류 기반 카드사 가맹 심사 진행" },
@@ -32,11 +32,74 @@ const productCards = [
 
 const OperationSection = () => {
   const timelineRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: timelineRef,
-    offset: ["start end", "end center"],
+  const firstDotRef = useRef<HTMLDivElement | null>(null);
+  const lastDotRef = useRef<HTMLDivElement | null>(null);
+  const { scrollY } = useScroll();
+  const progress = useMotionValue(0);
+  const [activeCount, setActiveCount] = useState(0);
+  const [lineMetrics, setLineMetrics] = useState<{ top: number; height: number; left: number }>({ top: 0, height: 0, left: 12 });
+
+  useEffect(() => {
+    const update = () => {
+      const container = timelineRef.current;
+      const first = firstDotRef.current;
+      const last = lastDotRef.current;
+      if (!container || !first || !last) return;
+
+      const cRect = container.getBoundingClientRect();
+      const fRect = first.getBoundingClientRect();
+      const lRect = last.getBoundingClientRect();
+
+      // Visual nudge: borders/blur can make the center feel slightly low.
+      const NUDGE_TOP_PX = -2;
+      const NUDGE_BOTTOM_PX = -4; // slightly more to avoid overshooting the last dot (mobile)
+      const LINE_W_PX = 2; // Tailwind w-0.5
+      const centerX = fRect.left - cRect.left + fRect.width / 2;
+      const left = centerX - LINE_W_PX / 2;
+
+      const top = fRect.top - cRect.top + fRect.height / 2 + NUDGE_TOP_PX;
+      const bottom = lRect.top - cRect.top + lRect.height / 2 + NUDGE_BOTTOM_PX;
+      const height = Math.max(0, bottom - top);
+
+      setLineMetrics({ top, height, left });
+    };
+
+    update();
+    window.addEventListener("resize", update);
+
+    // Font/image loads can shift layout; re-measure once more.
+    const t = window.setTimeout(update, 0);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  useMotionValueEvent(scrollY, "change", () => {
+    const el = timelineRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const viewportCenter = window.innerHeight / 2;
+    const elTop = rect.top;
+    const elCenter = rect.top + rect.height / 2;
+
+    // 0 when viewport center hits the top of the timeline,
+    // 1 when the timeline center aligns with the viewport center.
+    const denom = Math.max(1, elCenter - elTop); // == rect.height / 2
+    const raw = (viewportCenter - elTop) / denom;
+    const v = Math.min(1, Math.max(0, raw));
+
+    progress.set(v);
   });
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
+  useMotionValueEvent(progress, "change", (v) => {
+    const n = steps.length;
+    const next = Math.min(n, Math.max(0, Math.round(v * n)));
+    setActiveCount(next);
+  });
+
+  const active = useMemo(() => steps.map((_, i) => i < activeCount), [activeCount]);
 
   return (
     <section id="operation" className="py-32 px-6">
@@ -51,22 +114,32 @@ const OperationSection = () => {
         <SubLabel>— 설치 진행 단계</SubLabel>
         <div ref={timelineRef} className="relative pl-8 mb-16">
           {/* Progress line */}
-          <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-border/30" />
+          <div
+            className="absolute w-0.5 bg-border/30"
+            style={{ top: lineMetrics.top, height: lineMetrics.height, left: lineMetrics.left }}
+          />
           <motion.div
-            className="absolute left-3 top-0 w-0.5 bg-primary origin-top"
-            style={{ scaleY, height: "100%" }}
+            className="absolute top-0 w-0.5 bg-primary origin-top"
+            style={{ top: lineMetrics.top, height: lineMetrics.height, left: lineMetrics.left, scaleY: progress }}
           />
 
           <div className="space-y-8">
             {steps.map((step, i) => (
               <FadeInUp key={step.num} delay={i * 0.08}>
                 <div className="relative">
-                  <div className="absolute -left-8 top-1 w-6 h-6 rounded-full bg-background border-2 border-primary flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-primary">{step.num}</span>
+                  <div
+                    ref={i === 0 ? firstDotRef : i === steps.length - 1 ? lastDotRef : undefined}
+                    className={`glass-icon-box absolute -left-8 top-1 !h-7 !w-7 !rounded-full transition-all duration-300 ${
+                      active[i] ? "!border-primary/45 pink-glow" : "!border-white/35"
+                    }`}
+                  >
+                    <span className={`text-xs font-bold tabular-nums ${active[i] ? "text-primary" : "text-muted-foreground"}`}>
+                      {step.num}
+                    </span>
                   </div>
-                  <div className="glass-card p-5 ml-2">
-                    <h4 className="text-sm font-semibold text-foreground">{step.title}</h4>
-                    <p className="text-xs text-muted-foreground mt-1">{step.desc}</p>
+                  <div className={`glass-card p-5 ml-2 transition-all duration-300 ${active[i] ? "border-primary/30" : ""}`}>
+                    <h4 className="text-base font-semibold text-foreground leading-snug">{step.title}</h4>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{step.desc}</p>
                   </div>
                 </div>
               </FadeInUp>
@@ -79,12 +152,15 @@ const OperationSection = () => {
           {productCards.map((card, i) => (
             <FadeInUp key={card.title} delay={i * 0.05}>
               <div className="glass-card p-6 hover-lift h-full flex flex-col">
-                <card.icon size={24} className="text-primary mb-4" />
-                <h4 className="text-sm font-semibold text-foreground mb-2">{card.title}</h4>
-                <p className="text-xs text-muted-foreground leading-relaxed flex-1">{card.body}</p>
+                <div className="glass-icon-box mb-4 h-12 w-12">
+                  <card.icon size={22} className="text-primary" strokeWidth={2} />
+                </div>
+                <h4 className="text-base font-semibold text-foreground mb-2 leading-snug">{card.title}</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed flex-1">{card.body}</p>
                 {card.tip && (
-                  <div className="text-xs text-primary bg-primary/10 rounded-lg p-3 mt-3 border border-primary/20">
-                    💡 {card.tip}
+                  <div className="guide-note-tip mt-3 leading-relaxed flex items-start gap-2">
+                    <Lightbulb className="mt-[2px] h-4 w-4 shrink-0" />
+                    <span>{card.tip}</span>
                   </div>
                 )}
               </div>

@@ -34,18 +34,18 @@ const corpDocs = {
 };
 
 const DocBlock = ({ title, items, note }: { title: string; items: string[]; note?: string }) => (
-  <div className="glass-card p-6 mb-4">
-    <h4 className="text-sm font-bold text-primary mb-4">{title}</h4>
-    <ul className="space-y-2.5">
+  <div className="glass-card p-6 md:p-7 mb-4">
+    <h4 className="text-base font-bold text-primary mb-4">{title}</h4>
+    <ul className="space-y-3">
       {items.map((item) => (
-        <li key={item} className="flex items-start gap-3 text-sm text-muted-foreground">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary/60 shrink-0 mt-1.5" />
+        <li key={item} className="flex items-start gap-3 text-base text-muted-foreground leading-relaxed">
+          <span className="w-2 h-2 rounded-full bg-primary/70 shrink-0 mt-2" />
           {item}
         </li>
       ))}
     </ul>
     {note && (
-      <div className="text-xs text-muted-foreground bg-secondary/50 rounded-lg p-3 mt-4 border border-border/30">
+      <div className="guide-note mt-4 leading-relaxed">
         {note}
       </div>
     )}
@@ -66,20 +66,21 @@ const CardMerchantSection = () => {
         />
 
         <FadeInUp>
-          <div className="flex items-center gap-1 p-1 rounded-xl bg-secondary/50 w-fit mb-8">
+          <div className="flex items-center gap-1 p-1 rounded-xl glass-tabs-track w-fit mb-8">
             {tabs.map((tab) => (
               <button
                 key={tab}
+                type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`relative px-6 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                  activeTab === tab ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                className={`relative isolate min-w-[7.5rem] px-6 py-3 text-base font-semibold rounded-lg transition-colors ${
+                  activeTab === tab ? "text-white" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {activeTab === tab && (
                   <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-primary rounded-lg"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                    layoutId="activeMerchantTab"
+                    className="absolute inset-0 z-0 rounded-lg bg-primary shadow-md shadow-primary/25"
+                    transition={{ type: "tween", duration: 0.22, ease: "easeOut" }}
                   />
                 )}
                 <span className="relative z-10">{tab}</span>
@@ -91,10 +92,10 @@ const CardMerchantSection = () => {
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: [0.22, 0.1, 0.22, 1] }}
           >
             {activeTab === "개인사업자" ? (
               <>
@@ -102,10 +103,7 @@ const CardMerchantSection = () => {
                 <DocBlock {...personalDocs.existing} />
               </>
             ) : (
-              <>
-                <DocBlock {...personalDocs.new} />
-                <DocBlock {...corpDocs} />
-              </>
+              <DocBlock {...corpDocs} />
             )}
           </motion.div>
         </AnimatePresence>

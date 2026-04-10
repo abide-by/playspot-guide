@@ -51,13 +51,13 @@ const deviceFAQ: FAQItem[] = [
     q: "캡슐 최대 투입량은 어떻게 되나요?",
     a: (
       <>
-        <p className="text-foreground font-medium text-sm mb-2">자동 머신</p>
+        <p className="text-foreground font-medium text-base mb-2">자동 머신</p>
         <ul className="space-y-1 text-muted-foreground mb-4">
           <li>• 47~50mm: 160개 / 53~60mm: 140개</li>
           <li>• 60mm: 100개 / 62~70mm: 90개</li>
           <li>• 70mm: 85개 / 75mm: 60개 / 92mm: 40개</li>
         </ul>
-        <p className="text-foreground font-medium text-sm mb-2">수동 머신</p>
+        <p className="text-foreground font-medium text-base mb-2">수동 머신</p>
         <ul className="space-y-1 text-muted-foreground">
           <li>• 47~50mm: 180개 / 60mm: 100개</li>
           <li>• 70mm: 50개 / 75mm: 40개</li>
@@ -87,7 +87,7 @@ const paymentFAQ: FAQItem[] = [
           <li>• 원격 제어: <a href="http://www.playspotapp.co.kr/" target="_blank" rel="noreferrer" className="text-primary hover:underline font-medium">www.playspotapp.co.kr</a></li>
           <li>• 정확한 매출·부가세 내역: <a href="https://nibs.nicevan.co.kr/" target="_blank" rel="noreferrer" className="text-primary hover:underline font-medium">nibs.nicevan.co.kr</a> (회원가입 후)</li>
         </ul>
-        <div className="text-xs text-muted-foreground bg-secondary/50 rounded-lg p-3 mt-2">
+        <div className="guide-note mt-2 leading-relaxed">
           플레이스팟 앱의 매출은 <strong className="text-foreground">참고용</strong>으로 보시는 것을 권장드리며, 자세한 내역은 <strong className="text-foreground">nibs</strong>에서 확인하시는 것을 추천드립니다.
         </div>
       </>
@@ -99,7 +99,7 @@ const paymentFAQ: FAQItem[] = [
     a: (
       <>
         <p className="text-muted-foreground mb-3">플레이스팟 앱은 파트너사님의 원활한 초기 세팅을 돕기 위해 <strong className="text-foreground">최초 2개월간 무상</strong>으로 제공됩니다. 무상 지원 기간 종료 이후에는 유료 서비스로 전환되지만, 연장을 원치 않으실 경우 원격 관리 앱 사용만 제한될 뿐입니다.</p>
-        <div className="text-xs text-muted-foreground bg-secondary/50 rounded-lg p-3">
+        <div className="guide-note mt-3 leading-relaxed">
           머신의 현장 결제나 기본 운영에는 어떠한 영향이나 불이익도 발생하지 않습니다.
         </div>
       </>
@@ -129,7 +129,7 @@ const scheduleFAQ: FAQItem[] = [
     a: (
       <>
         <p className="text-muted-foreground mb-2">단말기 사업자 세팅 변경 시 <strong className="text-foreground">건당 15,000원 (VAT 별도)</strong>의 비용이 발생합니다.</p>
-        <div className="text-xs text-muted-foreground bg-secondary/50 rounded-lg p-3">※ A/S 출장비는 별도로 산정됩니다.</div>
+        <div className="guide-note mt-3 leading-relaxed">※ A/S 출장비는 별도로 산정됩니다.</div>
       </>
     ),
   },
@@ -153,7 +153,7 @@ const asFAQ: FAQItem[] = [
       <p className="text-muted-foreground">
         전용 도매몰 <strong className="text-foreground">플레이캡슐토이</strong>에서 구매 가능합니다.
         <br />
-        <a href="https://playcapsuletoy.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline text-sm">https://playcapsuletoy.com</a>
+        <a href="https://playcapsuletoy.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline text-base break-all">https://playcapsuletoy.com</a>
       </p>
     ),
   },
@@ -177,15 +177,15 @@ const FAQGroup = ({ label, items }: { label: string; items: FAQItem[] }) => (
         <FadeInUp key={item.num}>
           <AccordionItem
             value={item.num}
-            className="glass-card px-6 border-border/30 data-[state=open]:pink-glow transition-shadow duration-300"
+            className="glass-faq-accordion px-6 overflow-hidden data-[state=open]:pink-glow"
           >
-            <AccordionTrigger className="text-left text-sm md:text-base font-semibold text-foreground hover:no-underline py-5">
-              <span className="flex items-center gap-3">
-                <span className="text-xs font-bold text-primary">{item.num}</span>
-                {item.q}
+            <AccordionTrigger className="text-left text-base md:text-lg font-semibold text-foreground hover:no-underline py-6 [&[data-state=open]]:pb-3">
+              <span className="flex items-start gap-3">
+                <span className="text-sm font-bold text-primary tabular-nums shrink-0 mt-0.5">{item.num}</span>
+                <span className="leading-snug">{item.q}</span>
               </span>
             </AccordionTrigger>
-            <AccordionContent className="pb-5 pt-0 text-sm leading-relaxed">
+            <AccordionContent className="pb-6 pt-0 text-base leading-relaxed text-muted-foreground [&_strong]:text-foreground">
               {item.a}
             </AccordionContent>
           </AccordionItem>

@@ -7,9 +7,11 @@ import CardMerchantSection from "@/components/CardMerchantSection";
 import NetworkPowerSection from "@/components/NetworkPowerSection";
 import OperationSection from "@/components/OperationSection";
 import ContactSection from "@/components/ContactSection";
+import BackToTopButton from "@/components/BackToTopButton";
+import FloatingSectionNav from "@/components/FloatingSectionNav";
 
 const Index = () => (
-  <div className="min-h-screen bg-background">
+  <div className="page-glass-bg text-foreground">
     <Navigation />
     <HeroSection />
     <FAQSection />
@@ -19,7 +21,9 @@ const Index = () => (
     <NetworkPowerSection />
     <OperationSection />
     <ContactSection />
-    <footer className="py-12 text-center text-xs text-muted-foreground border-t border-border/30">
+    <FloatingSectionNav />
+    <BackToTopButton />
+    <footer className="py-12 text-center text-sm text-muted-foreground border-t border-white/40 bg-white/22 backdrop-blur-xl">
       © PLAY SPOT. All rights reserved.
     </footer>
   </div>

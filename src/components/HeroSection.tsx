@@ -13,7 +13,7 @@ const HeroSection = () => (
   <section className="min-h-screen flex flex-col items-center justify-center px-6 relative">
     <div className="max-w-4xl mx-auto text-center">
       <FadeInUp>
-        <span className="inline-block text-xs font-medium tracking-[0.3em] uppercase text-primary mb-6 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5">
+        <span className="inline-block text-sm font-medium tracking-[0.3em] uppercase text-primary mb-6 px-4 py-2 glass-pill border-primary/25">
           Master Guide
         </span>
       </FadeInUp>
@@ -25,7 +25,7 @@ const HeroSection = () => (
       </FadeInUp>
 
       <FadeInUp delay={0.2}>
-        <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           PLAY SPOT 창업의 처음부터 끝까지, 머신 선택부터 현장 설치·운영 교육까지 필요한 모든 정보를 단계별로 안내합니다.
         </p>
       </FadeInUp>
@@ -35,12 +35,18 @@ const HeroSection = () => (
           {steps.map((step, i) => (
             <motion.div
               key={step.num}
-              whileHover={{ y: -4 }}
-              className="glass-card p-5 text-left hover-lift"
+              initial={false}
+              whileHover={{
+                y: -4,
+                boxShadow:
+                  "0 12px 40px -14px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(255,255,255,0.65) inset, 0 0 36px -14px hsl(340 82% 52% / 0.12)",
+              }}
+              transition={{ type: "tween", duration: 0.09, ease: "easeOut" }}
+              className="glass-card p-5 text-left"
             >
               <span className="text-2xl font-bold text-gradient">{step.num}</span>
-              <div className="text-sm font-semibold text-foreground mt-2">{step.title}</div>
-              <div className="text-xs text-muted-foreground mt-1">{step.desc}</div>
+              <div className="text-base font-semibold text-foreground mt-2 leading-snug">{step.title}</div>
+              <div className="text-sm text-muted-foreground mt-1 leading-relaxed">{step.desc}</div>
             </motion.div>
           ))}
         </div>

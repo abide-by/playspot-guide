@@ -61,7 +61,7 @@ const OperationSection = () => {
             {steps.map((step, i) => (
               <FadeInUp key={step.num} delay={i * 0.08}>
                 <div className="relative">
-                  <div className="absolute -left-8 top-1 w-6 h-6 rounded-full bg-card border-2 border-primary flex items-center justify-center">
+                  <div className="absolute -left-8 top-1 w-6 h-6 rounded-full bg-background border-2 border-primary flex items-center justify-center">
                     <span className="text-[10px] font-bold text-primary">{step.num}</span>
                   </div>
                   <div className="glass-card p-5 ml-2">

@@ -27,7 +27,7 @@ const Navigation = () => {
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-background/80 backdrop-blur-xl border-b border-border/50"
+            ? "bg-background/90 backdrop-blur-xl border-b border-border/50 shadow-sm"
             : "bg-transparent"
         }`}
       >
@@ -59,7 +59,7 @@ const Navigation = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-40 bg-background/95 backdrop-blur-xl pt-20 px-8"
+            className="fixed inset-0 z-40 bg-background/98 backdrop-blur-xl pt-20 px-8"
           >
             <div className="flex flex-col gap-6">
               {navItems.map((item) => (

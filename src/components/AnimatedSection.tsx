@@ -9,7 +9,7 @@ interface Props {
 
 export const FadeInUp = ({ children, className = "", delay = 0 }: Props) => (
   <motion.div
-    initial={{ opacity: 0, y: 18 }}
+    initial={{ opacity: 0, y: 10 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: false, amount: 0.2, margin: "0px 0px -8% 0px" }}
     transition={{ duration: 0.42, delay, ease: [0.22, 0.1, 0.22, 1] }}

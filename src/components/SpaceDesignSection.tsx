@@ -58,7 +58,7 @@ const SpaceDesignSection = () => {
         />
 
         <SubLabel>— 3D 시안 제작을 위한 정보 요청</SubLabel>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4 mb-16 items-stretch">
           {requestItems.map((item, i) => (
             <div key={item.title} className="h-full min-h-0 min-w-0 flex flex-col">
               <FadeInUp delay={i * 0.05} className="min-h-0 flex flex-1 flex-col">

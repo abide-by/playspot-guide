@@ -67,6 +67,7 @@
   /* Page shell: soft layered gradient so glass surfaces read clearly */
   .page-glass-bg {
     min-height: 100vh;
+    min-height: 100dvh;
     background-color: hsl(210 28% 96%);
     background-image:
       radial-gradient(ellipse 130% 90% at 0% -30%, hsl(340 42% 94% / 0.95) 0%, transparent 55%),

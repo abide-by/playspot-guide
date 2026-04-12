@@ -117,18 +117,33 @@ const LineupSection = () => (
             <p className="text-sm font-semibold text-foreground">제원·조건 한눈에 비교</p>
             <p className="text-xs text-muted-foreground mt-0.5">같은 항목 기준으로 자동 / 수동 값을 확인하세요</p>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
             <div className="min-w-full md:min-w-[34rem] text-sm divide-y divide-white/20">
-              <div className="grid grid-cols-[minmax(6.5rem,0.85fr)_1fr_1fr]">
-                <div className="bg-white/35 px-3 py-3 font-semibold text-foreground text-left pl-4">항목</div>
-                <div className="bg-primary/[0.07] px-3 py-3 font-semibold text-primary text-center">플레이 큐브</div>
-                <div className="bg-sky-950/[0.06] px-3 py-3 font-semibold text-sky-900 text-center">플레이 수동</div>
+              <div className="grid grid-cols-[minmax(5.25rem,26%)_minmax(0,1fr)_minmax(0,1fr)]">
+                <div className="min-w-0 bg-white/35 px-2.5 py-3 font-semibold text-foreground text-left pl-3 md:px-3 md:pl-4">
+                  항목
+                </div>
+                <div className="min-w-0 bg-primary/[0.07] px-2.5 py-3 font-semibold text-primary text-left md:text-center md:px-3">
+                  플레이 큐브
+                </div>
+                <div className="min-w-0 bg-sky-950/[0.06] px-2.5 py-3 font-semibold text-sky-900 text-left md:text-center md:px-3">
+                  플레이 수동
+                </div>
               </div>
               {specs.map((s) => (
-                <div key={s.label} className="grid grid-cols-[minmax(6.5rem,0.85fr)_1fr_1fr]">
-                  <div className="bg-white/30 px-3 py-3.5 text-muted-foreground pl-4">{s.label}</div>
-                  <div className="bg-primary/[0.04] px-3 py-3.5 text-foreground text-center leading-snug">{s.auto}</div>
-                  <div className="bg-sky-950/[0.03] px-3 py-3.5 text-foreground text-center leading-snug">{s.manual}</div>
+                <div
+                  key={s.label}
+                  className="grid grid-cols-[minmax(5.25rem,26%)_minmax(0,1fr)_minmax(0,1fr)]"
+                >
+                  <div className="min-w-0 bg-white/30 px-2.5 py-3.5 text-muted-foreground pl-3 md:px-3 md:pl-4 break-words">
+                    {s.label}
+                  </div>
+                  <div className="min-w-0 bg-primary/[0.04] px-2.5 py-3.5 text-foreground text-left leading-snug break-words md:text-center md:px-3">
+                    {s.auto}
+                  </div>
+                  <div className="min-w-0 bg-sky-950/[0.03] px-2.5 py-3.5 text-foreground text-left leading-snug break-words md:text-center md:px-3">
+                    {s.manual}
+                  </div>
                 </div>
               ))}
             </div>

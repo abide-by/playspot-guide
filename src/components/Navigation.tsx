@@ -52,7 +52,7 @@ const Navigation = () => {
         <div className="max-w-6xl mx-auto px-6 h-14 relative flex items-center justify-center">
           <a
             href="/"
-            className="flex items-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 rounded-sm mx-auto"
+            className="mx-auto flex shrink-0 items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
             aria-label="PLAY SPOT"
             onClick={() => setIsOpen(false)}
           >

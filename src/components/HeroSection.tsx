@@ -10,8 +10,8 @@ const steps = [
 ];
 
 const HeroSection = () => (
-  <section className="min-h-screen flex flex-col items-center justify-center px-6 relative">
-    <div className="max-w-4xl mx-auto text-center">
+  <section className="relative flex min-h-screen min-h-dvh flex-col items-center px-6 pt-20 max-md:justify-start max-md:pb-10 max-md:pt-24 md:justify-center md:pb-28">
+    <div className="max-w-4xl mx-auto w-full text-center">
       <FadeInUp>
         <span className="inline-block text-sm font-medium tracking-[0.3em] uppercase text-primary mb-6 px-4 py-2 glass-pill border-primary/25">
           Master Guide
@@ -53,8 +53,10 @@ const HeroSection = () => (
       </FadeInUp>
     </div>
 
+    {/* 모바일: 카드 아래 흐름으로 배치해 겹침 방지 / 데스크톱: 하단 고정 */}
     <motion.div
-      className="absolute bottom-10 animate-bounce-slow"
+      className="pointer-events-none mt-14 flex w-full justify-center max-md:mb-1 max-md:opacity-75 md:absolute md:bottom-10 md:mt-0 md:w-auto md:opacity-100 md:left-1/2 md:-translate-x-1/2 animate-bounce-slow"
+      aria-hidden
     >
       <ChevronDown className="text-muted-foreground" size={24} />
     </motion.div>

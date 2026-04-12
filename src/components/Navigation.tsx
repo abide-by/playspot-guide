@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -13,8 +14,16 @@ const navItems = [
 ] as const;
 
 const Navigation = () => {
+  const { pathname } = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const closeMenuAndHome = () => {
+    setIsOpen(false);
+    if (pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -113,6 +122,20 @@ const Navigation = () => {
                 </div>
 
                 <div className="relative mt-6 flex flex-col gap-3">
+                  <motion.div
+                    initial={{ opacity: 0, x: 8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 8 }}
+                    transition={{ delay: 0 }}
+                  >
+                    <Link
+                      to="/"
+                      onClick={closeMenuAndHome}
+                      className="block rounded-lg px-3 py-2 text-base font-semibold tracking-tight text-white hover:bg-white/12"
+                    >
+                      홈
+                    </Link>
+                  </motion.div>
                   {navItems.map((item, i) => (
                     <motion.a
                       key={item.href}
@@ -120,7 +143,7 @@ const Navigation = () => {
                       initial={{ opacity: 0, x: 8 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 8 }}
-                      transition={{ delay: i * 0.04 }}
+                      transition={{ delay: (i + 1) * 0.04 }}
                       onClick={() => setIsOpen(false)}
                       className="rounded-lg px-3 py-2 text-base font-semibold tracking-tight text-white/90 hover:text-white hover:bg-white/12"
                     >
@@ -132,7 +155,7 @@ const Navigation = () => {
                     initial={{ opacity: 0, x: 8 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 8 }}
-                    transition={{ delay: navItems.length * 0.04 + 0.04 }}
+                    transition={{ delay: (navItems.length + 1) * 0.04 + 0.04 }}
                     onClick={() => setIsOpen(false)}
                     className="mt-3 inline-flex items-center justify-center rounded-full border border-white/15 bg-white/12 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(0,0,0,0.22)] hover:bg-white/16"
                   >

@@ -1,6 +1,37 @@
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { SectionHeader, FadeInUp } from "./AnimatedSection";
-import { Cpu, Wrench } from "lucide-react";
+import { ArrowLeft, ArrowRight, Cpu, Wrench } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+import auto1 from "@/assets/lineup-gallery/auto-1.png";
+import auto2 from "@/assets/lineup-gallery/auto-2.png";
+import auto3 from "@/assets/lineup-gallery/auto-3.png";
+import manual1 from "@/assets/lineup-gallery/manual-1.png";
+import manual2 from "@/assets/lineup-gallery/manual-2.png";
+import manual3 from "@/assets/lineup-gallery/manual-3.png";
+
+type GalleryKind = "auto" | "manual";
+
+const AUTO_GALLERY = [
+  { src: auto1, alt: "플레이 큐브 자동 머신 현장 사진 1" },
+  { src: auto2, alt: "플레이 큐브 자동 머신 현장 사진 2" },
+  { src: auto3, alt: "플레이 큐브 자동 머신 현장 사진 3" },
+] as const;
+
+const MANUAL_GALLERY = [
+  { src: manual1, alt: "플레이 수동 머신 현장 사진 1" },
+  { src: manual2, alt: "플레이 수동 머신 현장 사진 2" },
+  { src: manual3, alt: "플레이 수동 머신 현장 사진 3" },
+] as const;
 
 const specs = [
   { label: "제품 크기", auto: "330×472×550 mm", manual: "320×435×1770 mm (3단기준)" },
@@ -39,7 +70,41 @@ const parseBold = (text: string) => {
   });
 };
 
-const LineupSection = () => (
+const LineupSection = () => {
+  const [gallery, setGallery] = useState<GalleryKind | null>(null);
+  const [slideIdx, setSlideIdx] = useState(0);
+
+  const slides = useMemo(() => {
+    if (gallery === "auto") return [...AUTO_GALLERY];
+    if (gallery === "manual") return [...MANUAL_GALLERY];
+    return [];
+  }, [gallery]);
+
+  useEffect(() => {
+    if (gallery === null) return;
+    setSlideIdx(0);
+  }, [gallery]);
+
+  useEffect(() => {
+    if (gallery === null || slides.length === 0) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setSlideIdx((i) => (i - 1 + slides.length) % slides.length);
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setSlideIdx((i) => (i + 1) % slides.length);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [gallery, slides.length]);
+
+  const dialogTitle = gallery === "auto" ? "플레이 큐브 (자동)" : gallery === "manual" ? "플레이 수동 머신" : "";
+  const current = slides[slideIdx];
+
+  return (
   <section id="lineup" className="py-32 px-6">
     <div className="max-w-5xl mx-auto">
       <SectionHeader
@@ -52,11 +117,17 @@ const LineupSection = () => (
       {/* 성격이 드러나는 두 컬럼 — 동등한 시각 무게 */}
       <FadeInUp>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          <motion.div
+          <motion.button
+            type="button"
             initial={false}
             whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.995 }}
             transition={{ type: "tween", duration: 0.09, ease: "easeOut" }}
-            className="glass-card p-6 md:p-7"
+            className="glass-card p-6 md:p-7 w-full text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)]"
+            onClick={() => {
+              setSlideIdx(0);
+              setGallery("auto");
+            }}
           >
             <div className="flex items-start gap-3 mb-5">
               <div className="glass-icon-box h-11 w-11 shrink-0">
@@ -68,6 +139,7 @@ const LineupSection = () => (
                 </span>
                 <h3 className="text-xl font-bold text-foreground leading-snug">플레이 큐브</h3>
                 <p className="text-sm text-muted-foreground mt-2 leading-relaxed">디지털·무인 운영에 강한 타입</p>
+                <p className="text-xs text-primary/75 mt-2 font-medium">클릭하면 현장 사진 3장을 볼 수 있어요</p>
               </div>
             </div>
             <ul className="space-y-3 text-sm text-muted-foreground leading-relaxed">
@@ -78,13 +150,19 @@ const LineupSection = () => (
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </motion.button>
 
-          <motion.div
+          <motion.button
+            type="button"
             initial={false}
             whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.995 }}
             transition={{ type: "tween", duration: 0.09, ease: "easeOut" }}
-            className="glass-card p-6 md:p-7"
+            className="glass-card p-6 md:p-7 w-full text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)]"
+            onClick={() => {
+              setSlideIdx(0);
+              setGallery("manual");
+            }}
           >
             <div className="flex items-start gap-3 mb-5">
               <div className="glass-icon-box-sky h-11 w-11 shrink-0">
@@ -96,6 +174,7 @@ const LineupSection = () => (
                 </span>
                 <h3 className="text-xl font-bold text-foreground leading-snug">플레이 수동 머신</h3>
                 <p className="text-sm text-muted-foreground mt-2 leading-relaxed">도입 부담과 현장 운영에 강한 타입</p>
+                <p className="text-xs text-sky-800/80 mt-2 font-medium">클릭하면 현장 사진 3장을 볼 수 있어요</p>
               </div>
             </div>
             <ul className="space-y-3 text-sm text-muted-foreground leading-relaxed">
@@ -106,7 +185,7 @@ const LineupSection = () => (
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </motion.button>
         </div>
       </FadeInUp>
 
@@ -174,8 +253,80 @@ const LineupSection = () => (
           </div>
         </div>
       </FadeInUp>
+
+      <Dialog
+        open={gallery !== null}
+        onOpenChange={(open) => {
+          if (!open) setGallery(null);
+        }}
+      >
+        <DialogContent
+          overlayClassName="bg-gradient-to-b from-black/18 via-black/8 to-black/12 backdrop-blur-[2px]"
+          closeClassName="text-white opacity-90 hover:bg-white/15 hover:text-white hover:opacity-100 data-[state=open]:bg-transparent data-[state=open]:text-white"
+          className="flex max-w-[min(100vw-1rem,52rem)] flex-col gap-4 overflow-hidden !border-white/25 !bg-white/[0.02] p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-2xl backdrop-saturate-150 sm:rounded-2xl"
+        >
+          <DialogHeader className="space-y-1 pr-8 text-left sm:text-left">
+            <DialogTitle className="text-lg font-semibold tracking-tight text-white drop-shadow-[0_1px_10px_rgba(0,0,0,0.55)]">
+              {dialogTitle}
+            </DialogTitle>
+            <DialogDescription className="text-sm text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.45)]">
+              좌우 화살표 버튼 또는 키보드 방향키로 사진을 넘겨 보세요.
+            </DialogDescription>
+          </DialogHeader>
+          {slides.length > 0 && current ? (
+            <>
+              <img
+                key={current.src}
+                src={current.src}
+                alt={current.alt}
+                className="mx-auto block w-full max-w-full max-h-[min(70vh,560px)] object-contain"
+                decoding="async"
+              />
+              <div className="flex items-center justify-center gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-9 w-9 shrink-0 rounded-full border-white/35 bg-white/[0.08] text-white shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-md hover:bg-white/18 hover:text-white"
+                  onClick={() => setSlideIdx((i) => (i - 1 + slides.length) % slides.length)}
+                  aria-label="이전 사진"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <div className="flex gap-2" role="tablist" aria-label="사진 선택">
+                  {slides.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      role="tab"
+                      aria-selected={i === slideIdx}
+                      onClick={() => setSlideIdx(i)}
+                      className={cn(
+                        "h-2.5 w-2.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60",
+                        i === slideIdx ? "bg-white shadow-[0_0_0_2px_hsl(var(--primary))]" : "bg-white/35 hover:bg-white/55",
+                      )}
+                      aria-label={`${i + 1}번째 사진 보기`}
+                    />
+                  ))}
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-9 w-9 shrink-0 rounded-full border-white/35 bg-white/[0.08] text-white shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-md hover:bg-white/18 hover:text-white"
+                  onClick={() => setSlideIdx((i) => (i + 1) % slides.length)}
+                  aria-label="다음 사진"
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </>
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </div>
   </section>
-);
+  );
+};
 
 export default LineupSection;

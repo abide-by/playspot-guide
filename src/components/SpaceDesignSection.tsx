@@ -13,10 +13,34 @@ const requestItems = [
 ];
 
 const checklistItems = [
-  { icon: Car, label: "주차 및 하역", desc: "설치 차량의 주차 공간 확보 및 머신 하역이 가능한 지면 확인" },
-  { icon: Building2, label: "이동 경로", desc: "하역 지점부터 설치 장소까지의 계단, 높은 문턱 등 진입 방해 요소 사전 확인" },
-  { icon: ArrowUpDown, label: "승강기 확인", desc: "화물 전용 승강기 유무 확인. 일반 승강기 이용 시 건물 관리실을 통해 중량물 운반 가능 여부 사전 협의 필수" },
-  { icon: DoorOpen, label: "최종 진입", desc: "출입문 폭 실측(머신 규격 대비) 및 설치 위치 인근 상시 전원(220V 콘센트) 확보" },
+  {
+    icon: Car,
+    label: "주차 및 하역",
+    desc: "설치 차량의 주차 공간 확보 및 머신 하역이 가능한 지면 확인",
+    image: "/checklist/parking_and_unloading.png",
+    imageAlt: "설치 차량에서 머신을 하역하는 모습",
+  },
+  {
+    icon: Building2,
+    label: "이동 경로",
+    desc: "하역 지점부터 설치 장소까지의 계단, 높은 문턱 등 진입 방해 요소 사전 확인",
+    image: "/checklist/movement_path.png",
+    imageAlt: "복도와 계단을 지나 머신을 이동시키는 모습",
+  },
+  {
+    icon: ArrowUpDown,
+    label: "승강기 확인",
+    desc: "화물 전용 승강기 유무 확인. 일반 승강기 이용 시 건물 관리실을 통해 중량물 운반 가능 여부 사전 협의 필수",
+    image: "/checklist/elevator_check.png",
+    imageAlt: "승강기 안에서 머신을 운반하는 모습",
+  },
+  {
+    icon: DoorOpen,
+    label: "최종 진입",
+    desc: "출입문 폭 실측(머신 규격 대비) 및 설치 위치 인근 상시 전원(220V 콘센트) 확보",
+    image: "/checklist/final_entry.png",
+    imageAlt: "설치 위치에 머신을 올리고 전원을 연결하는 모습",
+  },
 ];
 
 const SpaceDesignSection = () => {
@@ -36,12 +60,15 @@ const SpaceDesignSection = () => {
 
     // Progress is 0 when viewport center hits element top,
     // and becomes 1 when element center aligns with viewport center.
-    const denom = Math.max(1, elCenter - elTop); // == rect.height / 2
+    // Stretch denominator so the same scroll position yields lower progress — checks activate a bit later.
+    const halfHeight = Math.max(1, elCenter - elTop); // == rect.height / 2
+    const denom = halfHeight * 1.35;
     const raw = (viewportCenter - elTop) / denom;
     const v = Math.min(1, Math.max(0, raw));
 
     const n = checklistItems.length;
-    const next = Math.min(n, Math.max(0, Math.round(v * n)));
+    // Slight negative bias so each step needs a touch more scroll than round(v*n) alone.
+    const next = Math.min(n, Math.max(0, Math.floor(v * n + 0.22)));
     setActiveCount(next);
   });
 
@@ -49,7 +76,7 @@ const SpaceDesignSection = () => {
 
   return (
     <section id="design" className="py-32 px-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <SectionHeader
           num="02"
           tag="Step 2 — 맞춤 공간 설계"
@@ -77,40 +104,66 @@ const SpaceDesignSection = () => {
         </div>
 
         <SubLabel>— 현장 설치 환경 핵심 체크리스트</SubLabel>
-        <div ref={checklistRef} className="space-y-3 mb-6">
-          {checklistItems.map((item, i) => (
-            <FadeInUp key={item.label} delay={i * 0.05} className="min-h-0">
-              <div
-                role="group"
-                className={`w-full glass-card p-5 flex items-start gap-4 text-left transition-all duration-300 min-h-0 ${
-                  checked[i] ? "border-primary/40 pink-glow" : ""
-                }`}
-              >
+        <div
+          ref={checklistRef}
+          className="mb-8 rounded-[1.75rem] border border-primary/12 bg-gradient-to-br from-primary/[0.07] via-white/30 to-primary/[0.04] p-4 sm:p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]"
+        >
+          <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2">
+            {checklistItems.map((item, i) => (
+              <FadeInUp key={item.label} delay={i * 0.06} className="min-h-0">
                 <div
-                  className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
-                    checked[i]
-                      ? "bg-primary border-primary"
-                      : "border-muted-foreground/30"
+                  role="group"
+                  className={`flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border-2 bg-white/55 text-left shadow-sm backdrop-blur-md transition-all duration-300 ${
+                    checked[i] ? "border-primary/35 pink-glow" : "border-primary/15"
                   }`}
                 >
-                  {checked[i] && (
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M2.5 6L5 8.5L9.5 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground" />
-                    </svg>
-                  )}
-                </div>
-                <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <div className="glass-icon-box-sm mt-0.5">
-                    <item.icon size={16} className="text-primary" strokeWidth={2} />
+                  <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
+                    <div className="flex items-start gap-3">
+                      <div
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+                          checked[i]
+                            ? "border-primary bg-primary"
+                            : "border-muted-foreground/25 bg-white/80"
+                        }`}
+                        aria-hidden
+                      >
+                        {checked[i] ? (
+                          <svg width="14" height="14" viewBox="0 0 12 12" fill="none" className="text-primary-foreground">
+                            <path
+                              d="M2.5 6L5 8.5L9.5 3.5"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        ) : null}
+                      </div>
+                      <div className="flex min-w-0 flex-1 items-start gap-2.5">
+                        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                          <item.icon size={18} strokeWidth={2} />
+                        </div>
+                        <div className="min-w-0 flex-1 space-y-1.5">
+                          <h3 className="text-base font-semibold leading-snug text-foreground sm:text-[1.0625rem]">{item.label}</h3>
+                          <p className="text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1 flex flex-col gap-1">
-                    <span className="text-base font-semibold text-foreground leading-snug">{item.label}</span>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                  <div className="relative aspect-[5/4] w-full shrink-0 sm:aspect-[4/3]">
+                    <img
+                      src={item.image}
+                      alt={item.imageAlt}
+                      className="absolute inset-0 h-full w-full object-cover object-center"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-white/25 to-transparent" />
                   </div>
                 </div>
-              </div>
-            </FadeInUp>
-          ))}
+              </FadeInUp>
+            ))}
+          </div>
         </div>
 
         <FadeInUp>

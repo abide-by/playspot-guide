@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionHeader, FadeInUp } from "./AnimatedSection";
+import { Lightbulb } from "lucide-react";
 
 const tabs = ["개인사업자", "법인사업자"] as const;
 
+/** 본문 포인트 핑크(`primary`)보다 한 톤 연한 라벨 */
+const guideRowLabelClass = "font-bold text-primary/72 md:text-primary/68";
+
 const commonBasicDocs = {
-  title: "개인 · 법인 사업자 공통 기본 서류",
+  title: "개인 · 법인 사업자 공통 기본 서류 — 신규",
   items: [
     "사업자 등록증 사본",
     "결제 대금 수령용 통장 사본",
@@ -15,6 +19,17 @@ const commonBasicDocs = {
   ],
   note: "※ 간판 없는 경우: 매장 전경 사진 1장 + 도로명 주소 사진 1장 필수",
 };
+
+const newApplyGuide = [
+  { label: "최초 신청", desc: "해당 사업자로 가맹신청을 처음 하시는 경우" },
+  { label: "복수 가맹", desc: "이미 가맹점이 있으나, 기존과 다른 입금 계좌를 등록하려는 경우" },
+  { label: "사업자 변경", desc: "개인에서 법인으로 전환되었거나 사업자번호가 변경된 경우" },
+];
+
+const existingApplyGuide = [
+  { label: "동일 계좌", desc: "이미 가맹 신청 이력이 있으며, 기존과 동일한 입금 계좌를 사용하는 경우" },
+  { label: "단순 추가", desc: "동일 사업장 내에서 단말기만 추가로 설치하시는 경우" },
+];
 
 const personalExistingDocs = {
   title: "개인사업자 — 기존",
@@ -104,6 +119,60 @@ const CardMerchantSection = () => {
             )}
           </motion.div>
         </AnimatePresence>
+
+        <FadeInUp delay={0.04}>
+          <div className="mt-10 md:mt-12">
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-14">
+              <div>
+                <h4 className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1 text-primary">
+                  <span className="text-lg font-bold tracking-tight md:text-xl">신규</span>
+                  <span className="text-base font-bold md:text-lg" aria-hidden>
+                    ㅡ
+                  </span>
+                  <span className="text-xs font-medium md:text-sm">최초 신청 / 복수 가맹 / 사업자 변경</span>
+                </h4>
+                <div className="mt-2 h-px w-full bg-neutral-400/80" />
+                <ul className="mt-4 space-y-3.5">
+                  {newApplyGuide.map((item) => (
+                    <li key={item.label} className="grid grid-cols-[6.25rem_minmax(0,1fr)] gap-x-3 gap-y-1 text-[0.9375rem] leading-snug md:grid-cols-[6.75rem_minmax(0,1fr)] md:text-base md:leading-relaxed">
+                      <span className={guideRowLabelClass}>{item.label}</span>
+                      <span className="text-muted-foreground">{item.desc}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1 text-primary">
+                  <span className="text-lg font-bold tracking-tight md:text-xl">기존</span>
+                  <span className="text-base font-bold md:text-lg" aria-hidden>
+                    ㅡ
+                  </span>
+                  <span className="text-xs font-medium md:text-sm">동일 계좌 / 단순 추가</span>
+                </h4>
+                <div className="mt-2 h-px w-full bg-neutral-400/80" />
+                <ul className="mt-4 space-y-3.5">
+                  {existingApplyGuide.map((item) => (
+                    <li key={item.label} className="grid grid-cols-[6.25rem_minmax(0,1fr)] gap-x-3 gap-y-1 text-[0.9375rem] leading-snug md:grid-cols-[6.75rem_minmax(0,1fr)] md:text-base md:leading-relaxed">
+                      <span className={guideRowLabelClass}>{item.label}</span>
+                      <span className="text-muted-foreground">{item.desc}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="mt-10 border-t border-neutral-300/70 pt-8 md:mt-12 md:pt-9">
+              <p className="flex items-center gap-2 text-base font-bold text-primary md:text-lg">
+                <Lightbulb className="h-5 w-5 shrink-0 text-primary" strokeWidth={2} aria-hidden />
+                확인해 주세요!
+              </p>
+              <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-muted-foreground md:text-base">
+                동일한 사업자라도 <span className="font-semibold text-foreground">정산 계좌</span>가 달라지면{" "}
+                <span className="font-semibold text-primary">신규</span>로 접수해 주셔야 하며, 제출 서류 또한{" "}
+                <span className="font-semibold text-primary">신규 기준</span>과 동일합니다.
+              </p>
+            </div>
+          </div>
+        </FadeInUp>
       </div>
     </section>
   );

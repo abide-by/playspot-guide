@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { SectionHeader, FadeInUp } from "./AnimatedSection";
 import { ArrowLeft, ArrowRight, Cpu, Wrench } from "lucide-react";
@@ -32,6 +32,14 @@ const MANUAL_GALLERY = [
   { src: manual2, alt: "플레이 수동 머신 현장 사진 2" },
   { src: manual3, alt: "플레이 수동 머신 현장 사진 3" },
 ] as const;
+
+function preloadImageUrls(urls: string[]) {
+  for (const src of urls) {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = src;
+  }
+}
 
 const specs = [
   { label: "제품 크기", auto: "330×472×550 mm", manual: "320×435×1770 mm (3단기준)" },
@@ -70,9 +78,16 @@ const parseBold = (text: string) => {
   });
 };
 
+const ALL_GALLERY_URLS = [
+  ...AUTO_GALLERY.map((s) => s.src),
+  ...MANUAL_GALLERY.map((s) => s.src),
+];
+
 const LineupSection = () => {
   const [gallery, setGallery] = useState<GalleryKind | null>(null);
   const [slideIdx, setSlideIdx] = useState(0);
+  const [slideImageLoaded, setSlideImageLoaded] = useState(false);
+  const slideImgRef = useRef<HTMLImageElement>(null);
 
   const slides = useMemo(() => {
     if (gallery === "auto") return [...AUTO_GALLERY];
@@ -84,6 +99,44 @@ const LineupSection = () => {
     if (gallery === null) return;
     setSlideIdx(0);
   }, [gallery]);
+
+  /** 배포 환경에서 팝업 첫 페인트 전 깜빡임 완화: 유휴 시 6장 선로딩 + 카드 호버 시 해당 세트 우선 */
+  useEffect(() => {
+    let cancelled = false;
+    const run = () => {
+      if (!cancelled) preloadImageUrls(ALL_GALLERY_URLS);
+    };
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(run, { timeout: 2800 });
+      return () => {
+        cancelled = true;
+        window.cancelIdleCallback(id);
+      };
+    }
+    const t = window.setTimeout(run, 400);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t);
+    };
+  }, []);
+
+  const preloadAutoGallery = useCallback(() => {
+    preloadImageUrls(AUTO_GALLERY.map((s) => s.src));
+  }, []);
+
+  const preloadManualGallery = useCallback(() => {
+    preloadImageUrls(MANUAL_GALLERY.map((s) => s.src));
+  }, []);
+
+  const currentSlideSrc = slides[slideIdx]?.src;
+  useEffect(() => {
+    setSlideImageLoaded(false);
+  }, [currentSlideSrc]);
+
+  useLayoutEffect(() => {
+    const el = slideImgRef.current;
+    if (el?.complete && el.naturalWidth > 0) setSlideImageLoaded(true);
+  }, [currentSlideSrc]);
 
   useEffect(() => {
     if (gallery === null || slides.length === 0) return;
@@ -103,6 +156,13 @@ const LineupSection = () => {
 
   const dialogTitle = gallery === "auto" ? "플레이 큐브 (자동)" : gallery === "manual" ? "플레이 수동 머신" : "";
   const current = slides[slideIdx];
+
+  useEffect(() => {
+    if (gallery === null || slides.length === 0) return;
+    const next = (slideIdx + 1) % slides.length;
+    const prev = (slideIdx - 1 + slides.length) % slides.length;
+    preloadImageUrls([slides[next]!.src, slides[prev]!.src]);
+  }, [gallery, slideIdx, slides]);
 
   return (
   <section id="lineup" className="py-32 px-6">
@@ -124,6 +184,8 @@ const LineupSection = () => {
             whileTap={{ scale: 0.995 }}
             transition={{ type: "tween", duration: 0.09, ease: "easeOut" }}
             className="glass-card flex h-full min-h-0 w-full flex-col p-6 text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)] md:p-7"
+            onPointerEnter={preloadAutoGallery}
+            onFocus={preloadAutoGallery}
             onClick={() => {
               setSlideIdx(0);
               setGallery("auto");
@@ -159,6 +221,8 @@ const LineupSection = () => {
             whileTap={{ scale: 0.995 }}
             transition={{ type: "tween", duration: 0.09, ease: "easeOut" }}
             className="glass-card flex h-full min-h-0 w-full flex-col p-6 text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)] md:p-7"
+            onPointerEnter={preloadManualGallery}
+            onFocus={preloadManualGallery}
             onClick={() => {
               setSlideIdx(0);
               setGallery("manual");
@@ -275,13 +339,28 @@ const LineupSection = () => {
           </DialogHeader>
           {slides.length > 0 && current ? (
             <>
-              <img
-                key={current.src}
-                src={current.src}
-                alt={current.alt}
-                className="mx-auto block w-full max-w-full max-h-[min(70vh,560px)] object-contain"
-                decoding="async"
-              />
+              <div className="relative mx-auto min-h-[min(40vh,280px)] w-full max-h-[min(70vh,560px)]">
+                <div
+                  className={cn(
+                    "pointer-events-none absolute inset-0 rounded-lg bg-white/[0.08] transition-opacity duration-200",
+                    slideImageLoaded ? "opacity-0" : "opacity-100 animate-pulse",
+                  )}
+                  aria-hidden
+                />
+                <img
+                  ref={slideImgRef}
+                  key={current.src}
+                  src={current.src}
+                  alt={current.alt}
+                  fetchPriority="high"
+                  decoding="async"
+                  onLoad={() => setSlideImageLoaded(true)}
+                  className={cn(
+                    "relative z-[1] mx-auto block max-h-[min(70vh,560px)] w-full max-w-full object-contain transition-opacity duration-200",
+                    slideImageLoaded ? "opacity-100" : "opacity-0",
+                  )}
+                />
+              </div>
               <div className="flex items-center justify-center gap-3">
                 <Button
                   type="button"

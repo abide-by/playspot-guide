@@ -116,14 +116,14 @@ const LineupSection = () => {
 
       {/* 성격이 드러나는 두 컬럼 — 동등한 시각 무게 */}
       <FadeInUp>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div className="grid grid-cols-1 items-stretch gap-6 mb-10 md:grid-cols-2">
           <motion.button
             type="button"
             initial={false}
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.995 }}
             transition={{ type: "tween", duration: 0.09, ease: "easeOut" }}
-            className="glass-card p-6 md:p-7 w-full text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)]"
+            className="glass-card flex h-full min-h-0 w-full flex-col p-6 text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)] md:p-7"
             onClick={() => {
               setSlideIdx(0);
               setGallery("auto");
@@ -142,7 +142,7 @@ const LineupSection = () => {
                 <p className="text-xs text-primary/75 mt-2 font-medium">클릭하면 현장 사진 3장을 볼 수 있어요</p>
               </div>
             </div>
-            <ul className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+            <ul className="min-h-0 flex-1 space-y-3 text-sm leading-relaxed text-muted-foreground">
               {autoHighlights.map((line) => (
                 <li key={line} className="flex gap-2">
                   <span className="text-primary font-bold shrink-0">·</span>
@@ -158,7 +158,7 @@ const LineupSection = () => {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.995 }}
             transition={{ type: "tween", duration: 0.09, ease: "easeOut" }}
-            className="glass-card p-6 md:p-7 w-full text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)]"
+            className="glass-card flex h-full min-h-0 w-full flex-col p-6 text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)] md:p-7"
             onClick={() => {
               setSlideIdx(0);
               setGallery("manual");
@@ -177,7 +177,7 @@ const LineupSection = () => {
                 <p className="text-xs text-sky-800/80 mt-2 font-medium">클릭하면 현장 사진 3장을 볼 수 있어요</p>
               </div>
             </div>
-            <ul className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+            <ul className="min-h-0 flex-1 space-y-3 text-sm leading-relaxed text-muted-foreground">
               {manualHighlights.map((line) => (
                 <li key={line} className="flex gap-2">
                   <span className="text-sky-800 font-bold shrink-0">·</span>

@@ -4,32 +4,26 @@ import { SectionHeader, FadeInUp } from "./AnimatedSection";
 
 const tabs = ["개인사업자", "법인사업자"] as const;
 
-const personalDocs = {
-  new: {
-    title: "개인사업자 — 신규",
-    items: [
-      "사업자 등록증 사본",
-      "결제 대금 수령용 통장 사본",
-      "대표자 신분증, 연락처, 이메일",
-      "간판 사진 2장 (각도 다르게) + 내부 사진 2장",
-      "공동 대표 시: 신분증·연락처 + 사업자 공인인증서 전자서명",
-    ],
-    note: "※ 간판 없는 경우: 매장 전경 사진 1장 + 도로명 주소 사진 1장 필수",
-  },
-  existing: {
-    title: "개인사업자 — 기존",
-    items: ["사업자 등록증 사본", "대표자 신분증, 연락처, 이메일"],
-  },
+const commonBasicDocs = {
+  title: "개인 · 법인 사업자 공통 기본 서류",
+  items: [
+    "사업자 등록증 사본",
+    "결제 대금 수령용 통장 사본",
+    "대표자 신분증, 연락처, 이메일",
+    "간판 사진 2장 (각도 다르게) + 내부 사진 2장",
+    "공동 대표 시: 신분증·연락처 + 사업자 공인인증서 전자서명",
+  ],
+  note: "※ 간판 없는 경우: 매장 전경 사진 1장 + 도로명 주소 사진 1장 필수",
 };
 
-const corpDocs = {
-  title: "법인사업자 — 신규",
-  items: [
-    "개인 기본 서류 일체",
-    "법인 인감 증명서 + 법인 등기부 등본",
-    "주주 명부",
-    "법인 담당자 연락처 및 이메일",
-  ],
+const personalExistingDocs = {
+  title: "개인사업자 — 기존",
+  items: ["사업자 등록증 사본", "대표자 신분증, 연락처, 이메일"],
+};
+
+const corpExtraDocs = {
+  title: "법인사업자 — 신규 ( 기본 서류 이외의 필요 서류)",
+  items: ["법인 인감 증명서 + 법인 등기부 등본", "주주 명부", "법인 담당자 연락처 및 이메일"],
   note: "※ 모든 법인 서류는 최근 3개월 이내 발급분 준비 / 법인 공인인증서 전자서명 수반",
 };
 
@@ -99,11 +93,14 @@ const CardMerchantSection = () => {
           >
             {activeTab === "개인사업자" ? (
               <>
-                <DocBlock {...personalDocs.new} />
-                <DocBlock {...personalDocs.existing} />
+                <DocBlock {...commonBasicDocs} />
+                <DocBlock {...personalExistingDocs} />
               </>
             ) : (
-              <DocBlock {...corpDocs} />
+              <>
+                <DocBlock {...commonBasicDocs} />
+                <DocBlock {...corpExtraDocs} />
+              </>
             )}
           </motion.div>
         </AnimatePresence>

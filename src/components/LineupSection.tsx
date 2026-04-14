@@ -88,6 +88,9 @@ const LineupSection = () => {
   const [slideIdx, setSlideIdx] = useState(0);
   const [slideImageLoaded, setSlideImageLoaded] = useState(false);
   const slideImgRef = useRef<HTMLImageElement>(null);
+  const prevNavRef = useRef<HTMLButtonElement>(null);
+  const nextNavRef = useRef<HTMLButtonElement>(null);
+  const [activeNavControl, setActiveNavControl] = useState<"prev" | "next" | null>(null);
 
   const slides = useMemo(() => {
     if (gallery === "auto") return [...AUTO_GALLERY];
@@ -129,30 +132,43 @@ const LineupSection = () => {
   }, []);
 
   const currentSlideSrc = slides[slideIdx]?.src;
-  useEffect(() => {
-    setSlideImageLoaded(false);
-  }, [currentSlideSrc]);
-
   useLayoutEffect(() => {
+    if (!currentSlideSrc) return;
+    setSlideImageLoaded(false);
     const el = slideImgRef.current;
     if (el?.complete && el.naturalWidth > 0) setSlideImageLoaded(true);
   }, [currentSlideSrc]);
+
+  useEffect(() => {
+    if (gallery === null) setActiveNavControl(null);
+  }, [gallery]);
 
   useEffect(() => {
     if (gallery === null || slides.length === 0) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
         e.preventDefault();
+        setActiveNavControl("prev");
         setSlideIdx((i) => (i - 1 + slides.length) % slides.length);
+        queueMicrotask(() =>
+          prevNavRef.current?.focus({ preventScroll: true }),
+        );
       }
       if (e.key === "ArrowRight") {
         e.preventDefault();
+        setActiveNavControl("next");
         setSlideIdx((i) => (i + 1) % slides.length);
+        queueMicrotask(() =>
+          nextNavRef.current?.focus({ preventScroll: true }),
+        );
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [gallery, slides.length]);
+
+  const navArrowRing =
+    "ring-2 ring-primary ring-offset-2 ring-offset-black/40 shadow-[0_0_0_1px_rgba(255,255,255,0.12)]";
 
   const dialogTitle = gallery === "auto" ? "플레이 큐브 (자동)" : gallery === "manual" ? "플레이 수동 머신" : "";
   const current = slides[slideIdx];
@@ -339,35 +355,56 @@ const LineupSection = () => {
           </DialogHeader>
           {slides.length > 0 && current ? (
             <>
-              <div className="relative mx-auto min-h-[min(40vh,280px)] w-full max-h-[min(70vh,560px)]">
+              <div
+                className="relative mx-auto h-[min(70vh,560px)] min-h-[min(40vh,240px)] w-full shrink-0 overflow-hidden rounded-lg"
+                aria-busy={!slideImageLoaded}
+              >
                 <div
                   className={cn(
-                    "pointer-events-none absolute inset-0 rounded-lg bg-white/[0.08] transition-opacity duration-200",
-                    slideImageLoaded ? "opacity-0" : "opacity-100 animate-pulse",
+                    "pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center gap-4 bg-white/[0.14] p-6 ring-1 ring-inset ring-white/25 transition-opacity duration-200",
+                    slideImageLoaded ? "opacity-0" : "opacity-100",
                   )}
                   aria-hidden
-                />
-                <img
-                  ref={slideImgRef}
-                  key={current.src}
-                  src={current.src}
-                  alt={current.alt}
-                  fetchPriority="high"
-                  decoding="async"
-                  onLoad={() => setSlideImageLoaded(true)}
-                  className={cn(
-                    "relative z-[1] mx-auto block max-h-[min(70vh,560px)] w-full max-w-full object-contain transition-opacity duration-200",
-                    slideImageLoaded ? "opacity-100" : "opacity-0",
-                  )}
-                />
+                >
+                  <div className="flex w-full max-w-sm flex-col gap-3">
+                    <div className="h-[min(28vh,200px)] w-full animate-pulse rounded-md bg-white/20" />
+                    <div className="mx-auto h-2.5 w-28 animate-pulse rounded-full bg-white/25" />
+                    <div className="mx-auto h-2.5 w-40 animate-pulse rounded-full bg-white/18" />
+                  </div>
+                  <p className="text-center text-xs font-medium tracking-tight text-white/55">
+                    사진을 불러오는 중…
+                  </p>
+                </div>
+                <div className="absolute inset-0 z-[1] flex items-center justify-center p-1">
+                  <img
+                    ref={slideImgRef}
+                    key={current.src}
+                    src={current.src}
+                    alt={current.alt}
+                    fetchPriority="high"
+                    decoding="sync"
+                    onLoad={() => setSlideImageLoaded(true)}
+                    className={cn(
+                      "max-h-full max-w-full object-contain transition-opacity duration-200",
+                      slideImageLoaded ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                </div>
               </div>
               <div className="flex items-center justify-center gap-3">
                 <Button
+                  ref={prevNavRef}
                   type="button"
                   variant="outline"
                   size="icon"
-                  className="h-9 w-9 shrink-0 rounded-full border-white/35 bg-white/[0.08] text-white shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-md hover:bg-white/18 hover:text-white"
-                  onClick={() => setSlideIdx((i) => (i - 1 + slides.length) % slides.length)}
+                  className={cn(
+                    "h-9 w-9 shrink-0 rounded-full border-white/35 bg-white/[0.08] text-white shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-md hover:bg-white/18 hover:text-white focus-visible:outline-none",
+                    activeNavControl === "prev" ? navArrowRing : "focus-visible:ring-2 focus-visible:ring-primary/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40",
+                  )}
+                  onClick={() => {
+                    setActiveNavControl("prev");
+                    setSlideIdx((i) => (i - 1 + slides.length) % slides.length);
+                  }}
                   aria-label="이전 사진"
                 >
                   <ArrowLeft className="h-4 w-4" />
@@ -379,6 +416,7 @@ const LineupSection = () => {
                       type="button"
                       role="tab"
                       aria-selected={i === slideIdx}
+                      onFocus={() => setActiveNavControl(null)}
                       onClick={() => setSlideIdx(i)}
                       className={cn(
                         "h-2.5 w-2.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60",
@@ -389,11 +427,18 @@ const LineupSection = () => {
                   ))}
                 </div>
                 <Button
+                  ref={nextNavRef}
                   type="button"
                   variant="outline"
                   size="icon"
-                  className="h-9 w-9 shrink-0 rounded-full border-white/35 bg-white/[0.08] text-white shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-md hover:bg-white/18 hover:text-white"
-                  onClick={() => setSlideIdx((i) => (i + 1) % slides.length)}
+                  className={cn(
+                    "h-9 w-9 shrink-0 rounded-full border-white/35 bg-white/[0.08] text-white shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-md hover:bg-white/18 hover:text-white focus-visible:outline-none",
+                    activeNavControl === "next" ? navArrowRing : "focus-visible:ring-2 focus-visible:ring-primary/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40",
+                  )}
+                  onClick={() => {
+                    setActiveNavControl("next");
+                    setSlideIdx((i) => (i + 1) % slides.length);
+                  }}
                   aria-label="다음 사진"
                 >
                   <ArrowRight className="h-4 w-4" />

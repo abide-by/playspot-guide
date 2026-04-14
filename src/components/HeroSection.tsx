@@ -3,11 +3,13 @@ import { ChevronDown } from "lucide-react";
 import { FadeInUp } from "./AnimatedSection";
 
 const steps = [
-  { num: "01", title: "도입 FAQ", desc: "기기 특징 및 운영 방식 문답" },
-  { num: "02", title: "머신 라인업", desc: "자동/수동 머신 상세 비교" },
-  { num: "03", title: "런칭 인프라", desc: "카드 가맹, 네트워크, 전력" },
-  { num: "04", title: "운영 & 설치", desc: "상품 준비, 교육, 프로세스" },
-];
+  { num: "01", title: "도입 FAQ", desc: "비즈니스·기기·결제·설치 등 핵심 문의 정리", href: "#faq" },
+  { num: "02", title: "맞춤 공간 설계", desc: "3D 시안·현장 변수 사전 점검", href: "#design" },
+  { num: "03", title: "머신 라인업", desc: "자동·수동 제원 비교·현장 사진", href: "#lineup" },
+  { num: "04", title: "카드 가맹", desc: "가맹 서류·사업자 유형별 구비 안내", href: "#infra" },
+  { num: "05", title: "네트워크·전력", desc: "LTE·Wi-Fi·상시 전원 운영 환경", href: "#network" },
+  { num: "06", title: "운영·설치", desc: "접수부터 설치·교육까지 진행 단계", href: "#operation" },
+] as const;
 
 const HeroSection = () => (
   <section className="relative flex min-h-screen min-h-dvh flex-col items-center px-6 pt-20 max-md:justify-start max-md:pb-10 max-md:pt-24 md:justify-center md:pb-28">
@@ -26,28 +28,31 @@ const HeroSection = () => (
 
       <FadeInUp delay={0.2}>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          PLAY SPOT 창업의 처음부터 끝까지, 머신 선택부터 현장 설치·운영 교육까지 필요한 모든 정보를 단계별로 안내합니다.
+          PLAY SPOT 창업의 처음부터 끝까지, FAQ·공간 설계·머신 선택부터 카드 가맹·네트워크·전력, 현장 설치·운영 교육까지 필요한 정보를 여섯 단계로 안내합니다.
         </p>
       </FadeInUp>
 
       <FadeInUp delay={0.4}>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
-          {steps.map((step, i) => (
-            <motion.div
+        <div className="mt-16 grid grid-cols-2 items-stretch gap-4 md:grid-cols-3">
+          {steps.map((step) => (
+            <motion.a
               key={step.num}
+              href={step.href}
               initial={false}
               whileHover={{
                 y: -4,
                 boxShadow:
                   "0 12px 40px -14px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(255,255,255,0.65) inset, 0 0 36px -14px hsl(340 82% 52% / 0.12)",
               }}
+              whileTap={{ scale: 0.99 }}
               transition={{ type: "tween", duration: 0.09, ease: "easeOut" }}
-              className="glass-card p-5 text-left"
+              className="glass-card flex h-full min-h-[11.5rem] flex-col p-5 text-left text-inherit no-underline outline-none ring-offset-2 ring-offset-[hsl(210_28%_97%)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+              aria-label={`${step.title} 섹션으로 이동`}
             >
               <span className="text-2xl font-bold text-gradient">{step.num}</span>
-              <div className="text-base font-semibold text-foreground mt-2 leading-snug">{step.title}</div>
-              <div className="text-sm text-muted-foreground mt-1 leading-relaxed">{step.desc}</div>
-            </motion.div>
+              <div className="mt-2 text-base font-semibold leading-snug text-foreground">{step.title}</div>
+              <div className="mt-1 flex-1 text-sm leading-relaxed text-muted-foreground">{step.desc}</div>
+            </motion.a>
           ))}
         </div>
       </FadeInUp>

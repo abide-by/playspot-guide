@@ -112,18 +112,18 @@ const OperationSection = () => {
         />
 
         <SubLabel>— 설치 진행 단계</SubLabel>
-        <div ref={timelineRef} className="relative pl-8 mb-16">
-          {/* Progress line */}
+        <div ref={timelineRef} className="relative isolate mb-16 pl-8">
+          {/* Progress line — scaleY()가 쌓임 맥락을 만들어 숫자 점보다 위로 올라오는 경우가 있어 z-index로 고정 */}
           <div
-            className="absolute w-0.5 bg-border/30"
+            className="pointer-events-none absolute z-0 w-0.5 bg-border/30"
             style={{ top: lineMetrics.top, height: lineMetrics.height, left: lineMetrics.left }}
           />
           <motion.div
-            className="absolute top-0 w-0.5 bg-primary origin-top"
+            className="pointer-events-none absolute top-0 z-[1] w-0.5 origin-top bg-primary"
             style={{ top: lineMetrics.top, height: lineMetrics.height, left: lineMetrics.left, scaleY: progress }}
           />
 
-          <div className="space-y-8">
+          <div className="relative z-[2] space-y-8">
             {steps.map((step, i) => (
               <FadeInUp key={step.num} delay={i * 0.08}>
                 <div className="relative">

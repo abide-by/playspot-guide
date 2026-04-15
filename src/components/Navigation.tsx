@@ -17,9 +17,9 @@ const navItems = [
 
 const machineIntroInk = "text-[#FF1C5C] hover:text-[#d91850]";
 
-/** 헤더: 텍스트만 + 호버 살짝 확대 */
+/** 헤더(md+): 텍스트만 + 호버 살짝 확대 — 모바일은 햄버거 메뉴에만 노출 */
 const machineIntroHeaderText =
-  `inline-block max-w-[calc(100vw-7.5rem)] origin-center text-sm font-medium no-underline transition-[transform,color] duration-200 ease-out hover:scale-105 ${machineIntroInk} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)] sm:max-w-none`;
+  `inline-block origin-center text-sm font-medium no-underline transition-[transform,color] duration-200 ease-out hover:scale-105 ${machineIntroInk} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)]`;
 
 const Navigation = () => {
   const { pathname } = useLocation();
@@ -67,7 +67,7 @@ const Navigation = () => {
         }`}
       >
         <div className="max-w-6xl mx-auto px-6 h-14 relative flex items-center justify-center">
-          <div className="absolute right-14 top-1/2 z-[1] -translate-y-1/2 sm:right-16 md:right-6">
+          <div className="hidden md:block md:absolute md:right-6 md:top-1/2 md:z-[1] md:-translate-y-1/2">
             <a
               href={MACHINE_INTRO_URL}
               target="_blank"
@@ -164,7 +164,7 @@ const Navigation = () => {
                     exit={{ opacity: 0, x: 8 }}
                     transition={{ delay: 0.04 }}
                     onClick={() => setIsOpen(false)}
-                    className={`block origin-left rounded-lg px-3 py-2 text-base font-semibold tracking-tight no-underline transition-[transform,color] duration-200 ease-out hover:scale-[1.03] hover:bg-white/10 ${machineIntroInk}`}
+                    className="block rounded-lg px-3 py-2 text-base font-semibold tracking-tight text-white/90 no-underline transition-colors hover:text-white hover:bg-white/12"
                   >
                     3세대 머신 소개
                   </motion.a>

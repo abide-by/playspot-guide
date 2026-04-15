@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const MACHINE_INTRO_URL = "https://playspot-intropage.pages.dev/";
+
 const navItems = [
   { href: "#faq", label: "01 — FAQ" },
   { href: "#design", label: "02 — 맞춤 공간 설계" },
@@ -12,6 +14,12 @@ const navItems = [
   { href: "#operation", label: "06 — 운영·설치" },
   { href: "#contact", label: "07 — 담당 센터" },
 ] as const;
+
+const machineIntroInk = "text-[#FF1C5C] hover:text-[#d91850]";
+
+/** 헤더: 텍스트만 + 호버 살짝 확대 */
+const machineIntroHeaderText =
+  `inline-block max-w-[calc(100vw-7.5rem)] origin-center text-sm font-medium no-underline transition-[transform,color] duration-200 ease-out hover:scale-105 ${machineIntroInk} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(210_28%_97%)] sm:max-w-none`;
 
 const Navigation = () => {
   const { pathname } = useLocation();
@@ -59,6 +67,17 @@ const Navigation = () => {
         }`}
       >
         <div className="max-w-6xl mx-auto px-6 h-14 relative flex items-center justify-center">
+          <div className="absolute right-14 top-1/2 z-[1] -translate-y-1/2 sm:right-16 md:right-6">
+            <a
+              href={MACHINE_INTRO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={machineIntroHeaderText}
+            >
+              3세대 머신 소개
+            </a>
+          </div>
+
           <a
             href="/"
             className="mx-auto flex shrink-0 items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
@@ -136,6 +155,19 @@ const Navigation = () => {
                       홈
                     </Link>
                   </motion.div>
+                  <motion.a
+                    href={MACHINE_INTRO_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, x: 8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 8 }}
+                    transition={{ delay: 0.04 }}
+                    onClick={() => setIsOpen(false)}
+                    className={`block origin-left rounded-lg px-3 py-2 text-base font-semibold tracking-tight no-underline transition-[transform,color] duration-200 ease-out hover:scale-[1.03] hover:bg-white/10 ${machineIntroInk}`}
+                  >
+                    3세대 머신 소개
+                  </motion.a>
                   {navItems.map((item, i) => (
                     <motion.a
                       key={item.href}
@@ -143,7 +175,7 @@ const Navigation = () => {
                       initial={{ opacity: 0, x: 8 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 8 }}
-                      transition={{ delay: (i + 1) * 0.04 }}
+                      transition={{ delay: (i + 2) * 0.04 }}
                       onClick={() => setIsOpen(false)}
                       className="rounded-lg px-3 py-2 text-base font-semibold tracking-tight text-white/90 hover:text-white hover:bg-white/12"
                     >
@@ -155,7 +187,7 @@ const Navigation = () => {
                     initial={{ opacity: 0, x: 8 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 8 }}
-                    transition={{ delay: (navItems.length + 1) * 0.04 + 0.04 }}
+                    transition={{ delay: (navItems.length + 2) * 0.04 }}
                     onClick={() => setIsOpen(false)}
                     className="mt-3 inline-flex items-center justify-center rounded-full border border-white/15 bg-white/12 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(0,0,0,0.22)] hover:bg-white/16"
                   >

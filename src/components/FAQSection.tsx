@@ -166,7 +166,16 @@ const asFAQ: FAQItem[] = [
   {
     num: "Q15",
     q: "렌탈도 가능한가요?",
-    a: <p className="text-muted-foreground">장기 렌탈 불가. <strong className="text-foreground">단기(30일 이내) 팝업스토어·행사·이벤트 임대 렌탈</strong>만 지원합니다.</p>,
+    a: (
+      <>
+        <p className="text-muted-foreground">
+          장기 렌탈은 불가합니다. <strong className="text-foreground">단기(30일 이내) 팝업스토어·행사·이벤트 임대 렌탈</strong>만 지원합니다.
+        </p>
+        <div className="guide-note mt-3 leading-relaxed">
+          ※ <strong className="text-primary">한 달 이상</strong> 이용하신다면, <strong className="text-primary">구매가 훨씬 저렴</strong>합니다.
+        </div>
+      </>
+    ),
   },
   {
     num: "Q16",

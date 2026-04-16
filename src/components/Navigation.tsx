@@ -15,6 +15,9 @@ const navItems = [
   { href: "#contact", label: "07 — 담당 센터" },
 ] as const;
 
+/** 모바일 드로어: 하단「담당 센터 바로가기」와 중복되므로 07 항목은 목록에서 제외 */
+const mobileDrawerNavItems = navItems.filter((item) => item.href !== "#contact");
+
 const machineIntroInk = "text-[#FF1C5C] hover:text-[#d91850]";
 
 /** 헤더(md+): 텍스트만 + 호버 살짝 확대 — 모바일은 햄버거 메뉴에만 노출 */
@@ -168,7 +171,7 @@ const Navigation = () => {
                   >
                     3세대 머신 소개
                   </motion.a>
-                  {navItems.map((item, i) => (
+                  {mobileDrawerNavItems.map((item, i) => (
                     <motion.a
                       key={item.href}
                       href={item.href}
@@ -187,7 +190,7 @@ const Navigation = () => {
                     initial={{ opacity: 0, x: 8 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 8 }}
-                    transition={{ delay: (navItems.length + 2) * 0.04 }}
+                    transition={{ delay: (mobileDrawerNavItems.length + 2) * 0.04 }}
                     onClick={() => setIsOpen(false)}
                     className="mt-3 inline-flex items-center justify-center rounded-full border border-white/15 bg-white/12 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(0,0,0,0.22)] hover:bg-white/16"
                   >

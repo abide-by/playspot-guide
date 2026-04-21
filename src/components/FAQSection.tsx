@@ -90,7 +90,7 @@ const paymentFAQ: FAQItem[] = [
     a: (
       <>
         <ul className="space-y-1.5 text-muted-foreground mb-3">
-          <li>• 원격 제어: <a href="http://www.playspotapp.co.kr/" target="_blank" rel="noreferrer" className="text-primary hover:underline font-medium">www.playspotapp.co.kr</a></li>
+          <li>• 원격 제어: <a href="https://dreampos.net/DreamToy/" target="_blank" rel="noreferrer" className="text-primary hover:underline font-medium">dreampos.net/DreamToy/</a></li>
           <li>• 정확한 매출·부가세 내역: <a href="https://nibs.nicevan.co.kr/" target="_blank" rel="noreferrer" className="text-primary hover:underline font-medium">nibs.nicevan.co.kr</a> (회원가입 후)</li>
         </ul>
         <div className="guide-note mt-2 leading-relaxed">

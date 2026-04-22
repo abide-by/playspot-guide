@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const MACHINE_INTRO_URL = "https://playspot-intropage.pages.dev/";
+const MACHINE_INTRO_URL = "https://brand.playspot.co.kr/";
 
 const navItems = [
   { href: "#faq", label: "01 — FAQ" },

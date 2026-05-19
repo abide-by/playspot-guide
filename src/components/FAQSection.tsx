@@ -53,13 +53,13 @@ const deviceFAQ: FAQItem[] = [
       <>
         <p className="text-foreground font-medium text-base mb-2">자동 머신</p>
         <ul className="space-y-1 text-muted-foreground mb-4">
-          <li>• 47~50mm: 160개</li>
-          <li>• 53~60mm: 140개</li>
-          <li>• 60mm: 100개</li>
-          <li>• 62~70mm: 90개</li>
-          <li>• 70mm: 85개</li>
-          <li>• 75mm: 60개</li>
-          <li>• 92mm: 40개</li>
+          <li>• 47~50mm: 130개</li>
+          <li>• 53~60mm: 100개</li>
+          <li>• 60mm: 80개</li>
+          <li>• 62~70mm: 70개</li>
+          <li>• 70mm: 60개</li>
+          <li>• 75mm: 50개</li>
+          <li>• 92mm: 25개</li>
         </ul>
         <p className="text-foreground font-medium text-base mb-2">수동 머신</p>
         <ul className="space-y-1 text-muted-foreground">

@@ -59,7 +59,7 @@ const deviceFAQ: FAQItem[] = [
           <li>• 62~70mm: 70개</li>
           <li>• 70mm: 60개</li>
           <li>• 75mm: 50개</li>
-          <li>• 92mm: 25개</li>
+          <li>• 92mm: 30개</li>
         </ul>
         <p className="text-foreground font-medium text-base mb-2">수동 머신</p>
         <ul className="space-y-1 text-muted-foreground">

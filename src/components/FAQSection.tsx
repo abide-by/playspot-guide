@@ -127,7 +127,7 @@ const paymentFAQ: FAQItem[] = [
               rel="noreferrer"
               className="text-primary hover:underline font-medium"
             >
-              dreampos.net/DreamToy/
+              cube.playspot.co.kr
             </a>
           </li>
           <li>
@@ -160,7 +160,7 @@ const paymentFAQ: FAQItem[] = [
       <>
         <p className="text-muted-foreground mb-3">
           플레이스팟 앱은 파트너사님의 원활한 초기 세팅을 돕기 위해{" "}
-          <strong className="text-foreground">최초 2개월간 무상</strong>으로
+          <strong className="text-foreground">최초 3개월간 무상</strong>으로
           제공됩니다. 무상 지원 기간 종료 이후에는 유료 서비스로 전환되지만,
           연장을 원치 않으실 경우 원격 관리 앱 사용만 제한될 뿐입니다.
         </p>

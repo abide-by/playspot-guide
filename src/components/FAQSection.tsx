@@ -77,7 +77,7 @@ const deviceFAQ: FAQItem[] = [
           <li>• 53~60mm: 100개</li>
           <li>• 60mm: 80개</li>
           <li>• 62~70mm: 70개</li>
-          <li>• 70mm: 70개</li>
+          <li>• 75mm: 60개</li>
           <li>• 92mm: 30개</li>
         </ul>
         <p className="text-foreground font-medium text-base mb-2">수동 머신</p>
@@ -98,8 +98,8 @@ const paymentFAQ: FAQItem[] = [
     q: "지원하는 결제 방식은 어떻게 되나요?",
     a: (
       <p className="text-muted-foreground">
-        신용/체크카드 전반 지원. 간편결제는 카카오페이, 토스페이, 네이버페이
-        사용 가능합니다.
+        신용/체크카드 전반 지원. 간편결제는 카카오페이, 토스페이, 네이버페이,
+        애플페이 사용 가능합니다.
       </p>
     ),
   },

@@ -5,46 +5,46 @@ import {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { motion } from "framer-motion";
-import { SectionHeader, FadeInUp } from "./AnimatedSection";
-import { ArrowLeft, ArrowRight, Cpu, Wrench } from "lucide-react";
+} from "react"
+import { motion } from "framer-motion"
+import { SectionHeader, FadeInUp } from "./AnimatedSection"
+import { ArrowLeft, ArrowRight, Cpu, Wrench } from "lucide-react"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
-import auto1 from "@/assets/lineup-gallery/auto-1.png";
-import auto2 from "@/assets/lineup-gallery/auto-2.png";
-import auto3 from "@/assets/lineup-gallery/auto-3.png";
-import manual1 from "@/assets/lineup-gallery/manual-1.png";
-import manual2 from "@/assets/lineup-gallery/manual-2.png";
-import manual3 from "@/assets/lineup-gallery/manual-3.png";
+import auto1 from "@/assets/lineup-gallery/auto-1.png"
+import auto2 from "@/assets/lineup-gallery/auto-2.png"
+import auto3 from "@/assets/lineup-gallery/auto-3.png"
+import manual1 from "@/assets/lineup-gallery/manual-1.png"
+import manual2 from "@/assets/lineup-gallery/manual-2.png"
+import manual3 from "@/assets/lineup-gallery/manual-3.png"
 
-type GalleryKind = "auto" | "manual";
+type GalleryKind = "auto" | "manual"
 
 const AUTO_GALLERY = [
   { src: auto1, alt: "플레이 큐브 자동 머신 현장 사진 1" },
   { src: auto2, alt: "플레이 큐브 자동 머신 현장 사진 2" },
   { src: auto3, alt: "플레이 큐브 자동 머신 현장 사진 3" },
-] as const;
+] as const
 
 const MANUAL_GALLERY = [
   { src: manual1, alt: "플레이 수동 머신 현장 사진 1" },
   { src: manual2, alt: "플레이 수동 머신 현장 사진 2" },
   { src: manual3, alt: "플레이 수동 머신 현장 사진 3" },
-] as const;
+] as const
 
 function preloadImageUrls(urls: string[]) {
   for (const src of urls) {
-    const img = new Image();
-    img.decoding = "async";
-    img.src = src;
+    const img = new Image()
+    img.decoding = "async"
+    img.src = src
   }
 }
 
@@ -77,142 +77,138 @@ const specs = [
     auto: "상시 220V 콘센트 + Wi-Fi 필수",
     manual: "무전원 가능 (교환기 사용 시 콘센트 필요)",
   },
-];
+]
 
 const autoHighlights = [
   "카드·간편결제 등 **디지털 결제**와 **원격 관리**에 최적화되어 무인·원거리 운영에 유리합니다.",
   "캡슐 규격 **최대 92mm**까지 넓게 대응해 상품 구성의 폭이 넓습니다.",
   "결제·매출 흐름을 **앱에서 확인**하며 운영 데이터를 한곳에서 다루기 쉽습니다.",
-];
+]
 
 const manualHighlights = [
   "**초기 도입 비용**이 상대적으로 낮아 부담 없이 시작하기 좋습니다.",
   "구성에 따라 **전원·Wi-Fi 없이**도 운영할 수 있어 설치 환경이 단순해질 수 있습니다.",
   "**기계식 구조**로 현장에서 바로 상태를 확인하고 대응하기 직관적입니다.",
-];
+]
 
 const parseBold = (text: string) => {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  const parts = text.split(/(\*\*[^*]+\*\*)/g)
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
         <strong key={i} className="text-foreground font-semibold">
           {part.slice(2, -2)}
         </strong>
-      );
+      )
     }
-    return part;
-  });
-};
+    return part
+  })
+}
 
 const ALL_GALLERY_URLS = [
   ...AUTO_GALLERY.map((s) => s.src),
   ...MANUAL_GALLERY.map((s) => s.src),
-];
+]
 
 const LineupSection = () => {
-  const [gallery, setGallery] = useState<GalleryKind | null>(null);
-  const [slideIdx, setSlideIdx] = useState(0);
-  const [slideImageLoaded, setSlideImageLoaded] = useState(false);
-  const slideImgRef = useRef<HTMLImageElement>(null);
-  const prevNavRef = useRef<HTMLButtonElement>(null);
-  const nextNavRef = useRef<HTMLButtonElement>(null);
+  const [gallery, setGallery] = useState<GalleryKind | null>(null)
+  const [slideIdx, setSlideIdx] = useState(0)
+  const [slideImageLoaded, setSlideImageLoaded] = useState(false)
+  const slideImgRef = useRef<HTMLImageElement>(null)
+  const prevNavRef = useRef<HTMLButtonElement>(null)
+  const nextNavRef = useRef<HTMLButtonElement>(null)
   const [activeNavControl, setActiveNavControl] = useState<
     "prev" | "next" | null
-  >(null);
+  >(null)
 
   const slides = useMemo(() => {
-    if (gallery === "auto") return [...AUTO_GALLERY];
-    if (gallery === "manual") return [...MANUAL_GALLERY];
-    return [];
-  }, [gallery]);
+    if (gallery === "auto") return [...AUTO_GALLERY]
+    if (gallery === "manual") return [...MANUAL_GALLERY]
+    return []
+  }, [gallery])
 
   useEffect(() => {
-    if (gallery === null) return;
-    setSlideIdx(0);
-  }, [gallery]);
+    if (gallery === null) return
+    setSlideIdx(0)
+  }, [gallery])
 
   /** 배포 환경에서 팝업 첫 페인트 전 깜빡임 완화: 유휴 시 6장 선로딩 + 카드 호버 시 해당 세트 우선 */
   useEffect(() => {
-    let cancelled = false;
+    let cancelled = false
     const run = () => {
-      if (!cancelled) preloadImageUrls(ALL_GALLERY_URLS);
-    };
-    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-      const id = window.requestIdleCallback(run, { timeout: 2800 });
-      return () => {
-        cancelled = true;
-        window.cancelIdleCallback(id);
-      };
+      if (!cancelled) preloadImageUrls(ALL_GALLERY_URLS)
     }
-    const t = window.setTimeout(run, 400);
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(run, { timeout: 2800 })
+      return () => {
+        cancelled = true
+        window.cancelIdleCallback(id)
+      }
+    }
+    const t = window.setTimeout(run, 400)
     return () => {
-      cancelled = true;
-      window.clearTimeout(t);
-    };
-  }, []);
+      cancelled = true
+      window.clearTimeout(t)
+    }
+  }, [])
 
   const preloadAutoGallery = useCallback(() => {
-    preloadImageUrls(AUTO_GALLERY.map((s) => s.src));
-  }, []);
+    preloadImageUrls(AUTO_GALLERY.map((s) => s.src))
+  }, [])
 
   const preloadManualGallery = useCallback(() => {
-    preloadImageUrls(MANUAL_GALLERY.map((s) => s.src));
-  }, []);
+    preloadImageUrls(MANUAL_GALLERY.map((s) => s.src))
+  }, [])
 
-  const currentSlideSrc = slides[slideIdx]?.src;
+  const currentSlideSrc = slides[slideIdx]?.src
   useLayoutEffect(() => {
-    if (!currentSlideSrc) return;
-    setSlideImageLoaded(false);
-    const el = slideImgRef.current;
-    if (el?.complete && el.naturalWidth > 0) setSlideImageLoaded(true);
-  }, [currentSlideSrc]);
+    if (!currentSlideSrc) return
+    setSlideImageLoaded(false)
+    const el = slideImgRef.current
+    if (el?.complete && el.naturalWidth > 0) setSlideImageLoaded(true)
+  }, [currentSlideSrc])
 
   useEffect(() => {
-    if (gallery === null) setActiveNavControl(null);
-  }, [gallery]);
+    if (gallery === null) setActiveNavControl(null)
+  }, [gallery])
 
   useEffect(() => {
-    if (gallery === null || slides.length === 0) return;
+    if (gallery === null || slides.length === 0) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        setActiveNavControl("prev");
-        setSlideIdx((i) => (i - 1 + slides.length) % slides.length);
-        queueMicrotask(() =>
-          prevNavRef.current?.focus({ preventScroll: true }),
-        );
+        e.preventDefault()
+        setActiveNavControl("prev")
+        setSlideIdx((i) => (i - 1 + slides.length) % slides.length)
+        queueMicrotask(() => prevNavRef.current?.focus({ preventScroll: true }))
       }
       if (e.key === "ArrowRight") {
-        e.preventDefault();
-        setActiveNavControl("next");
-        setSlideIdx((i) => (i + 1) % slides.length);
-        queueMicrotask(() =>
-          nextNavRef.current?.focus({ preventScroll: true }),
-        );
+        e.preventDefault()
+        setActiveNavControl("next")
+        setSlideIdx((i) => (i + 1) % slides.length)
+        queueMicrotask(() => nextNavRef.current?.focus({ preventScroll: true }))
       }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [gallery, slides.length]);
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [gallery, slides.length])
 
   const navArrowRing =
-    "ring-2 ring-primary ring-offset-2 ring-offset-black/40 shadow-[0_0_0_1px_rgba(255,255,255,0.12)]";
+    "ring-2 ring-primary ring-offset-2 ring-offset-black/40 shadow-[0_0_0_1px_rgba(255,255,255,0.12)]"
 
   const dialogTitle =
     gallery === "auto"
       ? "플레이 큐브 (자동)"
       : gallery === "manual"
         ? "플레이 수동 머신"
-        : "";
-  const current = slides[slideIdx];
+        : ""
+  const current = slides[slideIdx]
 
   useEffect(() => {
-    if (gallery === null || slides.length === 0) return;
-    const next = (slideIdx + 1) % slides.length;
-    const prev = (slideIdx - 1 + slides.length) % slides.length;
-    preloadImageUrls([slides[next]!.src, slides[prev]!.src]);
-  }, [gallery, slideIdx, slides]);
+    if (gallery === null || slides.length === 0) return
+    const next = (slideIdx + 1) % slides.length
+    const prev = (slideIdx - 1 + slides.length) % slides.length
+    preloadImageUrls([slides[next]!.src, slides[prev]!.src])
+  }, [gallery, slideIdx, slides])
 
   return (
     <section id="lineup" className="py-32 px-6">
@@ -237,8 +233,8 @@ const LineupSection = () => {
               onPointerEnter={preloadAutoGallery}
               onFocus={preloadAutoGallery}
               onClick={() => {
-                setSlideIdx(0);
-                setGallery("auto");
+                setSlideIdx(0)
+                setGallery("auto")
               }}
             >
               <div className="flex items-start gap-3 mb-5">
@@ -280,8 +276,8 @@ const LineupSection = () => {
               onPointerEnter={preloadManualGallery}
               onFocus={preloadManualGallery}
               onClick={() => {
-                setSlideIdx(0);
-                setGallery("manual");
+                setSlideIdx(0)
+                setGallery("manual")
               }}
             >
               <div className="flex items-start gap-3 mb-5">
@@ -379,7 +375,7 @@ const LineupSection = () => {
                     <strong className="text-foreground">
                       기기 중고 구매 시
                     </strong>
-                    : 출고일로부터 3개월
+                    : 출고일로부터 2개월
                   </li>
                 </ul>
                 <p>(사용자 과실 및 외부 파손 제외)</p>
@@ -413,7 +409,7 @@ const LineupSection = () => {
         <Dialog
           open={gallery !== null}
           onOpenChange={(open) => {
-            if (!open) setGallery(null);
+            if (!open) setGallery(null)
           }}
         >
           <DialogContent
@@ -480,10 +476,10 @@ const LineupSection = () => {
                         : "focus-visible:ring-2 focus-visible:ring-primary/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40",
                     )}
                     onClick={() => {
-                      setActiveNavControl("prev");
+                      setActiveNavControl("prev")
                       setSlideIdx(
                         (i) => (i - 1 + slides.length) % slides.length,
-                      );
+                      )
                     }}
                     aria-label="이전 사진"
                   >
@@ -524,8 +520,8 @@ const LineupSection = () => {
                         : "focus-visible:ring-2 focus-visible:ring-primary/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40",
                     )}
                     onClick={() => {
-                      setActiveNavControl("next");
-                      setSlideIdx((i) => (i + 1) % slides.length);
+                      setActiveNavControl("next")
+                      setSlideIdx((i) => (i + 1) % slides.length)
                     }}
                     aria-label="다음 사진"
                   >
@@ -538,7 +534,7 @@ const LineupSection = () => {
         </Dialog>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default LineupSection;
+export default LineupSection

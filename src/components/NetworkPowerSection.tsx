@@ -1,4 +1,4 @@
-import { SectionHeader, SubLabel, FadeInUp } from "./AnimatedSection";
+import { SectionHeader, SubLabel, FadeInUp } from "./AnimatedSection"
 import {
   Satellite,
   Link2,
@@ -8,7 +8,7 @@ import {
   CircuitBoard,
   Smartphone,
   Settings2,
-} from "lucide-react";
+} from "lucide-react"
 
 const widgets = [
   {
@@ -26,7 +26,7 @@ const widgets = [
     title: "월 통신료",
     body: "서비스 이용 시 별도 월 통신료 발생. 정확한 금액은 영업팀에 문의 바랍니다.",
   },
-];
+]
 
 const powerSpecs = [
   {
@@ -58,7 +58,7 @@ const powerSpecs = [
   },
   { icon: Zap, text: <>설치 전 분전반 차단기 용량 사전 확인</> },
   { icon: Zap, text: <>콘센트 위치 및 머신 수량에 따라 추가 설비 가능</> },
-];
+]
 
 const NetworkPowerSection = () => (
   <section id="network" className="py-32 px-6">
@@ -101,7 +101,7 @@ const NetworkPowerSection = () => (
           </div>
           <p className="text-base text-muted-foreground mb-3 leading-relaxed">
             플레이스팟 앱은 파트너사님의 원활한 초기 세팅을 돕기 위해{" "}
-            <strong className="text-foreground">최초 3개월간 무상</strong>으로
+            <strong className="text-foreground">최초 2개월간 무상</strong>으로
             제공됩니다.
           </p>
           <p className="text-base text-muted-foreground mb-3 leading-relaxed">
@@ -169,6 +169,6 @@ const NetworkPowerSection = () => (
       </div>
     </div>
   </section>
-);
+)
 
-export default NetworkPowerSection;
+export default NetworkPowerSection

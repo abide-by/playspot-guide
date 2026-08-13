@@ -1,15 +1,15 @@
-import { SectionHeader, SubLabel, FadeInUp } from "./AnimatedSection";
+import { SectionHeader, SubLabel, FadeInUp } from "./AnimatedSection"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/components/ui/accordion"
 
 interface FAQItem {
-  q: string;
-  num: string;
-  a: React.ReactNode;
+  q: string
+  num: string
+  a: React.ReactNode
 }
 
 const deviceFAQ: FAQItem[] = [
@@ -90,7 +90,7 @@ const deviceFAQ: FAQItem[] = [
       </>
     ),
   },
-];
+]
 
 const paymentFAQ: FAQItem[] = [
   {
@@ -160,7 +160,7 @@ const paymentFAQ: FAQItem[] = [
       <>
         <p className="text-muted-foreground mb-3">
           플레이스팟 앱은 파트너사님의 원활한 초기 세팅을 돕기 위해{" "}
-          <strong className="text-foreground">최초 3개월간 무상</strong>으로
+          <strong className="text-foreground">최초 2개월간 무상</strong>으로
           제공됩니다. 무상 지원 기간 종료 이후에는 유료 서비스로 전환되지만,
           연장을 원치 않으실 경우 원격 관리 앱 사용만 제한될 뿐입니다.
         </p>
@@ -171,7 +171,7 @@ const paymentFAQ: FAQItem[] = [
       </>
     ),
   },
-];
+]
 
 const scheduleFAQ: FAQItem[] = [
   {
@@ -227,7 +227,7 @@ const scheduleFAQ: FAQItem[] = [
       </p>
     ),
   },
-];
+]
 
 const asFAQ: FAQItem[] = [
   {
@@ -242,7 +242,7 @@ const asFAQ: FAQItem[] = [
           </li>
           <li>
             • <strong className="text-foreground">기기 중고 구매 시</strong>:
-            출고일로부터 3개월
+            출고일로부터 2개월
           </li>
         </ul>
         <p className="text-muted-foreground">
@@ -300,7 +300,7 @@ const asFAQ: FAQItem[] = [
       </p>
     ),
   },
-];
+]
 
 const FAQGroup = ({ label, items }: { label: string; items: FAQItem[] }) => (
   <div className="mb-10">
@@ -328,7 +328,7 @@ const FAQGroup = ({ label, items }: { label: string; items: FAQItem[] }) => (
       ))}
     </Accordion>
   </div>
-);
+)
 
 const FAQSection = () => (
   <section id="faq" className="py-32 px-6">
@@ -345,6 +345,6 @@ const FAQSection = () => (
       <FAQGroup label="— A/S 및 렌탈" items={asFAQ} />
     </div>
   </section>
-);
+)
 
-export default FAQSection;
+export default FAQSection
